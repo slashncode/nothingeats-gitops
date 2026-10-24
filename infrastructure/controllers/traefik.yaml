@@ -38,9 +38,8 @@ spec:
         web:
           namespacePolicy:
             from: All
-    logs:
-      access:
-        enabled: true
+    accessLog:
+      enabled: true
     resources:
       requests:
         cpu: 50m

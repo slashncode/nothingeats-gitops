@@ -30,3 +30,5 @@ find infrastructure apps -name kustomization.yaml -print0 | while IFS= read -r -
     # Secrets are encrypted in git; their schema is checked after decryption by Flux.
     kubectl kustomize "$dir" | kubeconform -strict -summary -skip Secret -kubernetes-version "$k8s_version" "${schemas[@]}"
 done
+
+scripts/check-helmreleases.sh
