@@ -1,0 +1,27 @@
+# Owned by the producer. Compacted: events are full snapshots keyed by id, so a new projection
+# (search, ordering prices) can rebuild the whole catalog by reading the topic from the start.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: catalog.restaurant.v1
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    cleanup.policy: compact
+---
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: catalog.dish.v1
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    cleanup.policy: compact

@@ -21,6 +21,8 @@ spec:
       tag: main-29770dd-1792871626 # {"$imagepolicy": "nothingeats:catalog-service:tag"}
     env:
       DATABASE__URL: jdbc:postgresql://postgres-rw:5432/catalog
+      KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
+      JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
     secretEnv:
       DATABASE__USER:
         secret: catalog-db
@@ -28,5 +30,14 @@ spec:
       DATABASE__PASSWORD:
         secret: catalog-db
         key: password
+    cronJobs:
+      # Manual only: kubectl -n nothingeats create job --from=cronjob/catalog-service-load-seed seed-$(date +%s)
+      - name: load-seed
+        task: load-seed
+        schedule: "0 5 1 1 *"
+        suspend: true
+      - name: purge-messaging
+        task: purge-messaging
+        schedule: "30 3 * * *"
     route:
       enabled: true
