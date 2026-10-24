@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-catalog-service
-      tag: main-3a3e9ed-1792867533 # {"$imagepolicy": "nothingeats:catalog-service:tag"}
+      tag: main-29770dd-1792871626 # {"$imagepolicy": "nothingeats:catalog-service:tag"}
     env:
       DATABASE__URL: jdbc:postgresql://postgres-rw:5432/catalog
     secretEnv:
