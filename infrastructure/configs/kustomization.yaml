@@ -5,3 +5,6 @@ resources:
   - postgres-roles.sops.yaml
   - postgres.yaml
   - mailpit-route.yaml
+  - valkey-users.sops.yaml
+  - valkey.yaml
+  - kafka.yaml

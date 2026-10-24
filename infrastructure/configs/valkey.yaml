@@ -1,0 +1,44 @@
+# Valkey for rate limits, leaderboards, SSE fan-out and caches.
+# In the cluster: valkey:6379. From the host: localhost:16379. Password: secret valkey-users, key default.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: valkey
+  namespace: nothingeats
+spec:
+  interval: 12h
+  url: https://valkey.io/valkey-helm/
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: valkey
+  namespace: nothingeats
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: valkey
+      version: 0.12.0
+      sourceRef:
+        kind: HelmRepository
+        name: valkey
+  values:
+    auth:
+      enabled: true
+      usersExistingSecret: valkey-users
+      aclUsers:
+        default:
+          permissions: "~* &* +@all"
+    dataStorage:
+      enabled: true
+      requestedSize: 512Mi
+    service:
+      type: NodePort
+      nodePort: 30379
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        memory: 192Mi

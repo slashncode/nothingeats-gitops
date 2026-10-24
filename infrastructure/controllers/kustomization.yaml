@@ -4,3 +4,4 @@ resources:
   - traefik.yaml
   - cloudnative-pg.yaml
   - mailpit.yaml
+  - strimzi.yaml
