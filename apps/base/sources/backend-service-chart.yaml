@@ -1,0 +1,19 @@
+# The shared service chart from GHCR. Flux only accepts versions signed by the charts repo's CI.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: backend-service-chart
+  namespace: nothingeats
+spec:
+  interval: 10m
+  url: oci://ghcr.io/slashncode/charts/backend-service
+  ref:
+    semver: ">=0.1.0 <1.0.0"
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  verify:
+    provider: cosign
+    matchOIDCIdentity:
+      - issuer: ^https://token\.actions\.githubusercontent\.com$
+        subject: ^https://github\.com/slashncode/nothingeats-charts/\.github/workflows/ci\.yml@refs/heads/main$

@@ -1,0 +1,27 @@
+# Credentials of the per-service database roles. Used by CloudNativePG and by the services.
+apiVersion: v1
+kind: Secret
+metadata:
+    name: catalog-db
+    namespace: nothingeats
+    labels:
+        cnpg.io/reload: "true"
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:flSa3U8nEw==,iv:/qeCbVT1ak0G7Q98nrUF/RXL5nFDujttdH5xb4gZq0E=,tag:mw4iAVW6XgoaCxcjhD+uuQ==,type:str]
+    password: ENC[AES256_GCM,data:Kx7KOSBSLWO7Du6K1HlkUnQ2yR/04meeXbbJnQ==,iv:vnPs3dVxp7Rx0yTsi/CGZogAs3Vh+p0Y7a4fHfEzd0Y=,tag:fvIiBWw67S7hzTYeDpLkIw==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBxUjhDNnJ4MWE4QTV3cFl0
+            Q3lUZEVLaEpYSTNpVGJ3VEUrSGdJVDUzaGdZCk9jSUxTSkVMejZtTUVHUTFNbm51
+            WWFmZytmMEp3TEErVjFiN2ZlM28xSUkKLS0tIFFWK05yL0xWWS9DeGJKZXhpNUVY
+            TXo5TlVqS3pYazdGbXg0SENTbCtFancK/NTjpRKEukxPLbFC2xsOfReaK89UMGiW
+            TrNP/qvYneAmOpFGF0KUNq1dq7TFE+dVEEQl0N6yMSDEvcqwZdyrjw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-24T18:15:35Z"
+    mac: ENC[AES256_GCM,data:ViVR80Njyagi8u3CCZNXZRiwS6DAC/g68glBRUF8CFic0QpclEtg5MpidfTWt7q+BEci0iepSSsUNi+RvwEdDj3deGqjb786G/t+c599iCeObfGrra6BHDW6XXC9+je7ln+C2h2/YhLtdFs53wXef/IGDf6hVbcAWoUljoPUDss=,iv:UvKy73JFYyOKdl+Pc4+lkq0mtAj/48YChq9hTf6PRKY=,tag:QWA9aK/GEG5wCOSHgOqkxg==,type:str]
+    version: 3.13.3

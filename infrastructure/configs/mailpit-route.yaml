@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: mailpit
+  namespace: mailpit
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: traefik
+  hostnames:
+    - mail.nothingeats.localhost
+  rules:
+    - backendRefs:
+        - name: mailpit-http
+          port: 80

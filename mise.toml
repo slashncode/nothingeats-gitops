@@ -1,0 +1,5 @@
+# Tools for validating this repo locally and in CI (same pins as the hub's mise.toml).
+[tools]
+kubectl = "1.36.5"
+kubeconform = "0.8.0"
+yq = "4.54.1"

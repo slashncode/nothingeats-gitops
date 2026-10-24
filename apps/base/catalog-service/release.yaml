@@ -1,0 +1,32 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: catalog-service
+  namespace: nothingeats
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: backend-service-chart
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  values:
+    image:
+      repository: ghcr.io/slashncode/nothingeats-catalog-service
+      tag: IMAGE_TAG_PLACEHOLDER # {"$imagepolicy": "nothingeats:catalog-service:tag"}
+    env:
+      DATABASE__URL: jdbc:postgresql://postgres-rw:5432/catalog
+    secretEnv:
+      DATABASE__USER:
+        secret: catalog-db
+        key: username
+      DATABASE__PASSWORD:
+        secret: catalog-db
+        key: password
+    route:
+      enabled: true

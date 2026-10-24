@@ -1,0 +1,6 @@
+# Secrets are committed encrypted. Only data/stringData are encrypted, so diffs stay readable.
+# Private key: ~/.config/sops/age/nothingeats.agekey (SOPS_AGE_KEY_FILE); in the cluster: flux-system/sops-age.
+creation_rules:
+  - path_regex: .*\.sops\.yaml$
+    encrypted_regex: ^(data|stringData)$
+    age: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx

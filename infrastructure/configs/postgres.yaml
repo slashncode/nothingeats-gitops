@@ -1,0 +1,42 @@
+# One Postgres cluster, one database and one role per service.
+# Adding a service: add its role below, its credentials to postgres-roles.sops.yaml,
+# and a Database resource next to its HelmRelease.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: nothingeats
+spec:
+  instances: 1
+  storage:
+    size: 2Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+  managed:
+    roles:
+      - name: catalog
+        ensure: present
+        login: true
+        passwordSecret:
+          name: catalog-db
+---
+# Postgres from the host on localhost:15432 (k3d maps 15432 -> NodePort 30432).
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-nodeport
+  namespace: nothingeats
+spec:
+  type: NodePort
+  selector:
+    cnpg.io/cluster: postgres
+    cnpg.io/instanceRole: primary
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+      nodePort: 30432
