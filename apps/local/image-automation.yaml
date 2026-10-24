@@ -1,14 +1,16 @@
 # Commits new image tags (from the ImagePolicies' setter markers under ./apps) back to main.
+# It only sees ImagePolicies in its own namespace, so it lives next to them in nothingeats.
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageUpdateAutomation
 metadata:
   name: apps
-  namespace: flux-system
+  namespace: nothingeats
 spec:
   interval: 1m
   sourceRef:
     kind: GitRepository
     name: flux-system
+    namespace: flux-system
   git:
     checkout:
       ref:
