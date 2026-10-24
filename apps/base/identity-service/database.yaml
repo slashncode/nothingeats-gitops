@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: identity
+  namespace: nothingeats
+spec:
+  name: identity
+  owner: identity
+  cluster:
+    name: postgres

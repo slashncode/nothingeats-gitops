@@ -1,5 +1,5 @@
 # One Postgres cluster, one database and one role per service.
-# Adding a service: add its role below, its credentials to postgres-roles.sops.yaml,
+# Adding a service: add its role below, its credentials as postgres-role-<service>.sops.yaml,
 # and a Database resource next to its HelmRelease.
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -23,6 +23,16 @@ spec:
         login: true
         passwordSecret:
           name: catalog-db
+      - name: identity
+        ensure: present
+        login: true
+        passwordSecret:
+          name: identity-db
+      - name: notification
+        ensure: present
+        login: true
+        passwordSecret:
+          name: notification-db
 ---
 # Postgres from the host on localhost:15432 (k3d maps 15432 -> NodePort 30432).
 apiVersion: v1

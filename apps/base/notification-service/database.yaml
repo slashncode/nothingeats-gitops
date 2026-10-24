@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: notification
+  namespace: nothingeats
+spec:
+  name: notification
+  owner: notification
+  cluster:
+    name: postgres

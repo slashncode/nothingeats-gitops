@@ -1,0 +1,39 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: notification-service
+  namespace: nothingeats
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: backend-service-chart
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  values:
+    image:
+      repository: ghcr.io/slashncode/nothingeats-notification-service
+      tag: main-bb23327-1792875758 # {"$imagepolicy": "nothingeats:notification-service:tag"}
+    env:
+      DATABASE__URL: jdbc:postgresql://postgres-rw:5432/notification
+      KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
+      SMTP__HOST: mailpit-smtp.mailpit.svc.cluster.local
+      SMTP__PORT: "25"
+      LINKS__WEB_BASE_URL: http://nothingeats.localhost
+      JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
+    secretEnv:
+      DATABASE__USER:
+        secret: notification-db
+        key: username
+      DATABASE__PASSWORD:
+        secret: notification-db
+        key: password
+    cronJobs:
+      - name: purge-messaging
+        task: purge-messaging
+        schedule: "30 3 * * *"

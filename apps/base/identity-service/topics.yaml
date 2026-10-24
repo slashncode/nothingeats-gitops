@@ -1,0 +1,13 @@
+# Owned by the producer. Short retention: the events carry addresses and verification tokens.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: identity.user.v1
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    retention.ms: "604800000"

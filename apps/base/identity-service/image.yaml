@@ -1,0 +1,23 @@
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: identity-service
+  namespace: nothingeats
+spec:
+  image: ghcr.io/slashncode/nothingeats-identity-service
+  interval: 1m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: identity-service
+  namespace: nothingeats
+spec:
+  imageRepositoryRef:
+    name: identity-service
+  filterTags:
+    pattern: ^main-[a-f0-9]+-(?P<ts>[0-9]+)$
+    extract: $ts
+  policy:
+    numerical:
+      order: asc

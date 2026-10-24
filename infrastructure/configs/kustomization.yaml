@@ -3,6 +3,8 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - postgres-roles.sops.yaml
+  - postgres-role-identity.sops.yaml
+  - postgres-role-notification.sops.yaml
   - postgres.yaml
   - mailpit-route.yaml
   - valkey-users.sops.yaml

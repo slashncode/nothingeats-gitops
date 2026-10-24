@@ -1,0 +1,43 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: identity-service
+  namespace: nothingeats
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: backend-service-chart
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  values:
+    image:
+      repository: ghcr.io/slashncode/nothingeats-identity-service
+      tag: main-6be830b-1792875476 # {"$imagepolicy": "nothingeats:identity-service:tag"}
+    env:
+      DATABASE__URL: jdbc:postgresql://postgres-rw:5432/identity
+      KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
+    secretEnv:
+      DATABASE__USER:
+        secret: identity-db
+        key: username
+      DATABASE__PASSWORD:
+        secret: identity-db
+        key: password
+      KEYS__ENCRYPTION_KEY:
+        secret: identity-keys
+        key: encryption-key
+    cronJobs:
+      - name: rotate-keys
+        task: rotate-signing-keys
+        schedule: "0 3 * * *"
+      - name: purge-messaging
+        task: purge-messaging
+        schedule: "30 3 * * *"
+    route:
+      enabled: true

@@ -1,0 +1,13 @@
+# The consumer group's dead-letter topic: events that failed every retry, kept for a month.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: notification-service.dlq
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: "2592000000"

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: notification-db
+    namespace: nothingeats
+    labels:
+        cnpg.io/reload: "true"
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:PED6YYTtgjbhlfX/,iv:VaLeROB/yEbmViPnrziQdDNRbOXP8jF/UeZkrb1rIR0=,tag:Ux/9D7zULQ68noRck16+jQ==,type:str]
+    password: ENC[AES256_GCM,data:Z4fZKxKSlGjzW+J7KZMoiL4d/6ZfsW00RQRtag==,iv:4oZ+r5IsKB0uD6mQ84SGHifhti60QoVbC3kBGsNziMM=,tag:JPGQX/WMu4IHSZV6CDbhVQ==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB1YTFLOTVkMjVnZ3g0Skta
+            NW5MYUhuTHErYXoyTm1xVWtQUUNwblY4V2hBCkJzcU53VDBSQTJ4SUREcHFwSWxP
+            aERMTml2RkRlSWQzNlFBN2YvQkt0MncKLS0tIE91UGc0RzJhSk1ZR0RrM1piUC9Z
+            S0wwUlB3VEhvMmJNa1JZbTBtQ3dEVVkKOSzh/jo6g1UirEEw/zn0p6CUoXF5sp47
+            60dD2EZnbYCr22Q+yQ/YXdpReke8NRTDmy+Z2bAH+lG1HtUFi9I40w==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-24T20:59:27Z"
+    mac: ENC[AES256_GCM,data:TRCBMPA07J6nR9Kwir5Rl25rEqw1LPE61ockkBlqzKfE/Y0YIqvNQph6Gxu4v/nn4WPljylKq0IUnxcmstLEmBxACCvIPKRO3P9fnoK5GKssUKh7H2zS1JUchOdq+3VPI4rm/jUvAIBY2Tpg+mKhZrx97LuS7hio028+7lc3QHc=,iv:naKDhzCZmEXtg3utRnCdqLYWnePTQZYvVGbBiE5hc24=,tag:YFz6YGisi/XZTTy/HC501Q==,type:str]
+    version: 3.13.3

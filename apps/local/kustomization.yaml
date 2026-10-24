@@ -3,4 +3,6 @@ kind: Kustomization
 resources:
   - ../base/sources
   - ../base/catalog-service
+  - ../base/identity-service
+  - ../base/notification-service
   - image-automation.yaml
