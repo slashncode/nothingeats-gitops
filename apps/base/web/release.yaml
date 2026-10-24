@@ -1,0 +1,27 @@
+# The customer SPA at http://nothingeats.localhost/ (the services keep /api/*).
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: web
+  namespace: nothingeats
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: static-web-chart
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  values:
+    image:
+      repository: ghcr.io/slashncode/nothingeats-web
+      tag: main-f4a9f78-1792883563 # {"$imagepolicy": "nothingeats:web:tag"}
+    # No POSTHOG_KEY yet: analytics stay off until a PostHog project exists (then as a SOPS secret).
+    env:
+      POSTHOG_HOST: https://eu.i.posthog.com
+    route:
+      enabled: true
