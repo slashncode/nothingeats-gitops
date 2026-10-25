@@ -49,6 +49,10 @@ spec:
       - name: purge-messaging
         task: purge-messaging
         schedule: "30 3 * * *"
+      # Erases deleted accounts at PostHog; waits until POSTHOG__PERSONAL_API_KEY exists (record 030).
+      - name: erase-analytics
+        task: erase-analytics
+        schedule: "15 * * * *"
     # Argon2 needs 19 MiB of heap per hash (at most four at once); more room than the chart default.
     resources:
       requests:
