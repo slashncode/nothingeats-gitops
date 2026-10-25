@@ -32,6 +32,9 @@ spec:
       KEYS__ENCRYPTION_KEY:
         secret: identity-keys
         key: encryption-key
+      POSTHOG__PROJECT_TOKEN:
+        secret: posthog
+        key: project-token
     cronJobs:
       - name: rotate-keys
         task: rotate-signing-keys

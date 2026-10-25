@@ -30,6 +30,9 @@ spec:
       DATABASE__PASSWORD:
         secret: catalog-db
         key: password
+      POSTHOG__PROJECT_TOKEN:
+        secret: posthog
+        key: project-token
     cronJobs:
       # Manual only: kubectl -n nothingeats create job --from=cronjob/catalog-service-load-seed seed-$(date +%s)
       - name: load-seed

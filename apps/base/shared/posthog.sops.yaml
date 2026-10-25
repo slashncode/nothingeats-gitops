@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: posthog
+    namespace: nothingeats
+type: Opaque
+stringData:
+    project-token: ENC[AES256_GCM,data:aNMbo/G15+ECg7l9qWvVokGi5Uz0izXZ4PcqqfZqznQLsR5bMupvjolVvT5jagrZ,iv:61/+1h7oEyupyp9XfJxlxTxgK5/qPcTMbJj5zv9Jqz4=,tag:QtSERgAJdZJo+vVHtSvSow==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBZUEFqY3NqR0J1WkZRRTRm
+            QUNoNjk5d2xsaWxYaVlEV2NVTGFJUSt5Y0VvClU4ZTkyME1Wa01RRndwcVdHWHN5
+            MzlJTG50Z0c3TkFqb3RDR1J1U1NpVW8KLS0tIFMyMHNiRkVtc2NaQTA5QXpLVERl
+            R09Hd3pVRm9SdmVqMkdsc1h4VWovLzgKNRVGE6sfwC4NJOLJjfJxehCxXSqxLagL
+            2vlZsTE3ktcLLc3/56zQG9YdFy8guP7CFocgDPXDOAQV2uYbtCb8XQ==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-25T11:08:38Z"
+    mac: ENC[AES256_GCM,data:ES15xSwMmuVwfyVfRcVf2B/NEXo7yvuDkzHb6kSTXIXBLItNBsg4DpBDmBN3fyZ6ueXWqBXlEhP9XW9vAmtoqhwe8PJQJB/ZuyWZYohrIIc3kgv/Wv4NedMELynZSCF5/Rn7NaP53AlEA8iX930Z2t+nunLzB+FpHMNL6rqmuU0=,iv:ubmeJ/Dl6qY9eKqMphsrLqyOAUJZ8+HqkCvgOKqNU+s=,tag:fyITdiG0y+RqrGnSnH2ISA==,type:str]
+    version: 3.13.3

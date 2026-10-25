@@ -33,6 +33,9 @@ spec:
       DATABASE__PASSWORD:
         secret: notification-db
         key: password
+      POSTHOG__PROJECT_TOKEN:
+        secret: posthog
+        key: project-token
     cronJobs:
       - name: purge-messaging
         task: purge-messaging

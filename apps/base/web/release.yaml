@@ -20,8 +20,12 @@ spec:
     image:
       repository: ghcr.io/slashncode/nothingeats-web
       tag: main-f4a9f78-1792883563 # {"$imagepolicy": "nothingeats:web:tag"}
-    # No POSTHOG_KEY yet: analytics stay off until a PostHog project exists (then as a SOPS secret).
     env:
       POSTHOG_HOST: https://eu.i.posthog.com
+    # The project key is public (it ends up in every browser), but lives in one place: apps/base/shared.
+    secretEnv:
+      POSTHOG_KEY:
+        secret: posthog
+        key: project-token
     route:
       enabled: true
