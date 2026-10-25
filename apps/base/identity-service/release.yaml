@@ -22,6 +22,10 @@ spec:
     env:
       DATABASE__URL: jdbc:postgresql://postgres-rw:5432/identity
       KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
+      VALKEY__HOST: valkey
+      VALKEY__PORT: "6379"
+      # Become admin on verification or login (local cluster: register this address via Mailpit).
+      ADMIN__EMAILS: admin@nothingeats.dev
     secretEnv:
       DATABASE__USER:
         secret: identity-db
@@ -35,6 +39,9 @@ spec:
       POSTHOG__PROJECT_TOKEN:
         secret: posthog
         key: project-token
+      VALKEY__PASSWORD:
+        secret: valkey-users
+        key: default
     cronJobs:
       - name: rotate-keys
         task: rotate-signing-keys
