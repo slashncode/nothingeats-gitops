@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-identity-service
-      tag: main-ed9f5ec-1792930325 # {"$imagepolicy": "nothingeats:identity-service:tag"}
+      tag: main-b0f4173-1792930917 # {"$imagepolicy": "nothingeats:identity-service:tag"}
     env:
       DATABASE__URL: jdbc:postgresql://postgres-rw:5432/identity
       KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
