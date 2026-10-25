@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-web
-      tag: main-1911eec-1792927291 # {"$imagepolicy": "nothingeats:web:tag"}
+      tag: main-5fd7575-1792930578 # {"$imagepolicy": "nothingeats:web:tag"}
     env:
       POSTHOG_HOST: https://eu.i.posthog.com
     # The project key is public (it ends up in every browser), but lives in one place: apps/base/shared.
