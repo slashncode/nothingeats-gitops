@@ -1,0 +1,25 @@
+# PostHog personal API key (scopes person:write, feature_flag:read), identity only: erases deleted
+# accounts at PostHog (cron erase-analytics, record 030). Not in the shared `posthog` secret on purpose.
+apiVersion: v1
+kind: Secret
+metadata:
+    name: identity-posthog
+    namespace: nothingeats
+type: Opaque
+stringData:
+    personal-api-key: ENC[AES256_GCM,data:gMf4lRUs75koAs+QS4dNKUrnFBxUo3KM/pOZpPfCTZkWdCfpZ+iSzgt23MTVoplpA3bWIA==,iv:0Il4NKvjXUDTNJA7X4hxVIaw7IZDkEE0FB4le+q4aAM=,tag:ppSCAuHHcnJpZCs3gBHmNw==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA2YjhqNEYza3duQzEwejJV
+            VlprWUZKVS9vMEpLVEhyeHY2NDlLNHJOZ1JJCjVLSGVyMXJudVpOa0hEZXJ1Qk5a
+            RHNkRU40MlBWRjVZeVExaGt3R0R6aGsKLS0tIHRsZGpmMklUN1d2bkNGbS9JTzFY
+            dURLTDdycGJSalhqRWxMTEw3NWNyV0UKQsWY73rPlsNO5f3O8o1bZ6bqN3fjjf6j
+            iPXatmzuOmAXap8ce+CvC2VT2jbUTSzMntl3++jEUlYD0HBXU/DIhA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-26T08:35:15Z"
+    mac: ENC[AES256_GCM,data:oQJmXV2agnQ+pji5/0+Q3KB9lhI0iZhzfsOZc03HB5ekTeKK3KTfuNV1yjrL5HA8BXpHQ4wLvqqZHHi3o/KDuUqSzuZam1MCSAmdvnHfpwWpkOWgOgtiR4f4aM+ATRU1ZozGhLet9KFFDLLInbDCy71wpf9JoE5V5NQszPXcP+w=,iv:LEXGJPXVp6b6Ogurc8nB4s7471rfLrVRky55vL5JEPU=,tag:RpuPTCBiBwVCvuPXMvLuKg==,type:str]
+    version: 3.13.3

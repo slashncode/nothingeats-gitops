@@ -39,6 +39,9 @@ spec:
       POSTHOG__PROJECT_TOKEN:
         secret: posthog
         key: project-token
+      POSTHOG__PERSONAL_API_KEY:
+        secret: identity-posthog
+        key: personal-api-key
       VALKEY__PASSWORD:
         secret: valkey-users
         key: default
@@ -49,7 +52,7 @@ spec:
       - name: purge-messaging
         task: purge-messaging
         schedule: "30 3 * * *"
-      # Erases deleted accounts at PostHog; waits until POSTHOG__PERSONAL_API_KEY exists (record 030).
+      # Erases deleted accounts at PostHog with the personal API key (record 030).
       - name: erase-analytics
         task: erase-analytics
         schedule: "15 * * * *"
