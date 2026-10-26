@@ -1,0 +1,55 @@
+# One Elasticsearch node for search and (later) the RAG vector index. Host port 19200 (k3d → NodePort 30200).
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: search
+  namespace: nothingeats
+spec:
+  version: 9.5.5
+  # Plain HTTP inside the cluster, like Postgres and Kafka locally; TLS comes with the production cluster.
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+    service:
+      spec:
+        type: NodePort
+        ports:
+          - name: http
+            port: 9200
+            targetPort: 9200
+            nodePort: 30200
+  # Services get their own users with only the privileges they need (search-service-user.sops.yaml).
+  auth:
+    roles:
+      - secretName: search-service-role
+    fileRealm:
+      - secretName: search-service-user
+  volumeClaimDeletePolicy: DeleteOnScaledownOnly
+  nodeSets:
+    - name: default
+      count: 1
+      config:
+        # k3d nodes don't raise vm.max_map_count; niofs instead of mmap avoids the bootstrap check.
+        node.store.allow_mmap: false
+      podTemplate:
+        spec:
+          containers:
+            - name: elasticsearch
+              env:
+                - name: ES_JAVA_OPTS
+                  value: -Xms768m -Xmx768m
+              resources:
+                requests:
+                  cpu: 200m
+                  memory: 1536Mi
+                limits:
+                  memory: 1536Mi
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes: [ReadWriteOnce]
+            resources:
+              requests:
+                storage: 2Gi

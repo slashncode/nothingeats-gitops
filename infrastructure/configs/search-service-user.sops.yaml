@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: search-service-user
+    namespace: nothingeats
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:lfvNAc3pIjI5CaC807g=,iv:KKFcsW2UF1GRtBjxn3H1FmkFJcQsEV6aGHOB0/RrVx8=,tag:6FqrT/t6sarz3LoTeBEWtw==,type:str]
+    password: ENC[AES256_GCM,data:ngtipcyl7bR466A+nVMdGkxoFwrhYzCGiY+C6g==,iv:+d8VMFI8cnCMYpjdwmeWG3UR4pnYoby0SoaN9GZOTPI=,tag:a6iJwCTjEfRPzbq/ABHWGQ==,type:str]
+    roles: ENC[AES256_GCM,data:QrPsVOu5i9nyHZek2S8=,iv:w8gSIV+qX4AY12+pR4LaXK964bYJpVH3DYoREeEDg90=,tag:4x32AokLpeC2XQN5EVsuzA==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA2ajI5QUwxS1dXTlJpdTF1
+            WjBKVklDZTU3djhDa3kva1B3WW8vQ250N1N3CmJQQXZsZXN3WjBGYjByOU5mei9W
+            S0J4RGY3QkZxdGV1MklwcUNqY1BaY2MKLS0tICtjWmtSUUgwdWlwTmpzYlN1VFl1
+            WVdxdmdrVnQyVnhLWkRFVE1kVWFwUGMKBV6pXKqOrP1l6rEyiFLvi9k9bmxIEaaf
+            Rz+l3XWaoStBU+iU9rzOZeJzRRbLGhDdCtg/dFJ4ULbKwS/csqzVMg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-26T07:35:23Z"
+    mac: ENC[AES256_GCM,data:PkN5ebE90HtE2DoQ6I5Sx6aselX557L7JwSOFzwKFlN5WvUEiEdGG20/PBrYsekhduOsXJugHUT6rdc4oXvSaLeJi9tbao7kAO05eQDpfmibSSymMznnh+hc5TVePf9G3QCqOZPMjTb9ebA2XhpMRU01wCju2ZEUFA7OKDuyIis=,iv:4ZbHRqdKErOUbmEVW8ZG4suRI2H05HmDd68e/e/wk14=,tag:vYObWSWVO7QJBnwO26fzkw==,type:str]
+    version: 3.13.3

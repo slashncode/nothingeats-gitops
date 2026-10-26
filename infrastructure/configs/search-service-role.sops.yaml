@@ -1,0 +1,23 @@
+# What search-service may do: everything on its own indices (dishes*, restaurants*), nothing else.
+apiVersion: v1
+kind: Secret
+metadata:
+    name: search-service-role
+    namespace: nothingeats
+stringData:
+    roles.yml: ENC[AES256_GCM,data:9s0uc88TSQJfUt0mEggRHMzxhKedlFAY1CdHxLV7oaJxTBUb3VC9+l4nFA37thZEwzMK90sFcC0/bNs3Pnki240JlUiaexp9OMx+BEOVsnYHc1nbwU2bVvHijJR2aLTQm/2p3xoD6axtUNVJp4tvfNCJ2RAD,iv:CE0IBvGV1ieoNFZhz0/0dwjW6x/p06LkFjRFwB/5zK4=,tag:RXetmqZKQZMYUFMsO3AHVA==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBIcWduMm1vQmJ5cm5pZnNz
+            WEdUSmxmellQR3BOd0NsRFdGVU1tRWpkc2pjCmdCU2VkU29rN2JnRktXcHphR0Ni
+            L1Zyb25TdTQzUCtkRWtVTGJjS2dMZVUKLS0tIEhTVnZuTjFKc2JlSDFXSTBwTG5a
+            RHd3T1dCNjdwS0FMa05MVDB5SXQxcmMKowWPMyTzWdef0xVDo4TrWkCa7aJfuaRJ
+            QUwoyMDrQFK6q6ODvXYMHJqDl49kX2b1KxVXVWfVyFVsdaO3Fv0ppw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-26T07:35:37Z"
+    mac: ENC[AES256_GCM,data:EVZBLDYqGydvPpyqHkuOeONVgfyocr1CafjPQfvtn/8hFLKTJc8OU0qsMz8hpqA+BOtAPFsmhjYG6CkMMmW3BWODd48zCoRWe0VSZxrum6OO7dRN/ypz3vWMAXyt/2ZKBjZRckxxhD4mQ5G2wEVQ7AuHAeB+0IBbLQUn/72UWxg=,iv:uADGZaXHuFG8N4P6r53v/wcmJee7Jm8q7l5O0pwom5Y=,tag:tF4qaDWlUp4g4HqefktjdQ==,type:str]
+    version: 3.13.3

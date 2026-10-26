@@ -5,3 +5,4 @@ resources:
   - cloudnative-pg.yaml
   - mailpit.yaml
   - strimzi.yaml
+  - eck.yaml

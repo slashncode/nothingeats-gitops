@@ -10,3 +10,6 @@ resources:
   - valkey-users.sops.yaml
   - valkey.yaml
   - kafka.yaml
+  - search-service-role.sops.yaml
+  - search-service-user.sops.yaml
+  - elasticsearch.yaml
