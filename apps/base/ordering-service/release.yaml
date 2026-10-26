@@ -1,0 +1,43 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ordering-service
+  namespace: nothingeats
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: backend-service-chart
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  values:
+    image:
+      repository: ghcr.io/slashncode/nothingeats-ordering-service
+      tag: main-954fd47-1793021818 # {"$imagepolicy": "nothingeats:ordering-service:tag"}
+    env:
+      DATABASE__URL: jdbc:postgresql://postgres-rw:5432/ordering
+      KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
+      JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
+      # The first gRPC edge: quotes from delivery, round-robin over its pods (headless service).
+      DELIVERY__TARGET: dns:///delivery-service-grpc:9090
+    secretEnv:
+      DATABASE__USER:
+        secret: ordering-db
+        key: username
+      DATABASE__PASSWORD:
+        secret: ordering-db
+        key: password
+      POSTHOG__PROJECT_TOKEN:
+        secret: posthog
+        key: project-token
+    cronJobs:
+      - name: purge-messaging
+        task: purge-messaging
+        schedule: "40 3 * * *"
+    route:
+      enabled: true

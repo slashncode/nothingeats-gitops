@@ -1,0 +1,27 @@
+# Owned by the producer. Seven days: placed orders carry the customer's drop-off location.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: ordering.order.v1
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    retention.ms: "604800000"
+---
+# The consumer group's dead-letter topic: events that failed every retry, kept for a month.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: ordering-service.dlq
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: "2592000000"

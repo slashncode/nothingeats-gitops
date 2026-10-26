@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: delivery-db
+    namespace: nothingeats
+    labels:
+        cnpg.io/reload: "true"
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:SK6eES5OkBE=,iv:ttzXiZG72UeXUBxLclUDIew/uDMBjNgHvbQOnZIIWzw=,tag:fJtKqrfEXvKDs9n56qCRtw==,type:str]
+    password: ENC[AES256_GCM,data:YI8qCpDwy2o5dz6UgLBsYRVpfb6sfm9Sv5TefwcwTJE=,iv:NeyRHDAcyydMcedagjCLAOgOEgZYLWTbKrKZ1poWNqc=,tag:AESbNmuzSHqiUQNn5j0Cpw==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA0SHBJWDR2cXY2NXJuL3Fq
+            WndZRDl0MTIvdElObzhWamhpdWJJcUo3akI0Cjc3M1k1WDRZeDlHWWVrQnRNRDRz
+            U0IzYU5TVHlJY0VxaGhqZENEQ0tiTTQKLS0tIG9LV3g3UGhtODQzYTlBcWVaVnlF
+            UXFBZEVoRStKNW5YOWcwUDhOZ2hYTTAKAL0+GjXV/JpF/2ADeP99C3gaS90HF3Dw
+            RyBymtJ10SJ+8R6qr1AzvkwKwuunQAQySvm36Rk++YGFVVNBTJXodg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-26T13:40:15Z"
+    mac: ENC[AES256_GCM,data:BJMlFiEC+wgpxcNXgMkU3OCDOKxps+CxlaDChULL2hPlU6j8DQRQ2a2nmpJ3zzyFoXZwtNU+37+H5b8uM2I3SIxk8gQyM8Ctq0+5ZGJcTFmAWx91gcW8660a1o5UHNipKDttTlKLRDO1dGVI5CDG+cLJ6Y2wxnaWpU3CYJfedDE=,iv:CiUtWf1uczMqRYa8rDeufa3mQMEASUutJNFzYmiQjAM=,tag:QMM4Ls52T6e8gw3B7tmuYA==,type:str]
+    version: 3.13.3

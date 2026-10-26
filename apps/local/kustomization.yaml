@@ -4,8 +4,10 @@ resources:
   - ../base/sources
   - ../base/shared
   - ../base/catalog-service
+  - ../base/delivery-service
   - ../base/identity-service
   - ../base/notification-service
+  - ../base/ordering-service
   - ../base/search-service
   - ../base/web
   - image-automation.yaml

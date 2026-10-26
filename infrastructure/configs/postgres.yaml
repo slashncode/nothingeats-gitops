@@ -33,6 +33,16 @@ spec:
         login: true
         passwordSecret:
           name: notification-db
+      - name: ordering
+        ensure: present
+        login: true
+        passwordSecret:
+          name: ordering-db
+      - name: delivery
+        ensure: present
+        login: true
+        passwordSecret:
+          name: delivery-db
 ---
 # Postgres from the host on localhost:15432 (k3d maps 15432 -> NodePort 30432).
 apiVersion: v1

@@ -1,0 +1,45 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: delivery-service
+  namespace: nothingeats
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: backend-service-chart
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  values:
+    image:
+      repository: ghcr.io/slashncode/nothingeats-delivery-service
+      tag: main-2c3e312-1793008861 # {"$imagepolicy": "nothingeats:delivery-service:tag"}
+    env:
+      DATABASE__URL: jdbc:postgresql://postgres-rw:5432/delivery
+      KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
+      JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
+      # 0.1: a 30-minute delivery takes 3 real minutes.
+      SIMULATION__TIME_SCALE: "0.1"
+    secretEnv:
+      DATABASE__USER:
+        secret: delivery-db
+        key: username
+      DATABASE__PASSWORD:
+        secret: delivery-db
+        key: password
+      POSTHOG__PROJECT_TOKEN:
+        secret: posthog
+        key: project-token
+    grpc:
+      enabled: true
+    cronJobs:
+      - name: purge-messaging
+        task: purge-messaging
+        schedule: "50 3 * * *"
+    route:
+      enabled: true

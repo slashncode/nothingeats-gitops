@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: ordering-db
+    namespace: nothingeats
+    labels:
+        cnpg.io/reload: "true"
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:5gPK1n45WYU=,iv:2pi7jKDFpIGmfKFKpIr7pkUKM+7Y1NB6YDFusjNBqPo=,tag:KqoMkkjUMSBbPFmQ9oYZLQ==,type:str]
+    password: ENC[AES256_GCM,data:nuhn0BuBqcPgYhyOWxlAe1j3sIVApXvbIdi53tMrGMk=,iv:zoHMbbLgoiUiSiPR/Fz2FmmtEUFmN1XtsIoJc7oYdJU=,tag:Lx6X4n4lJSqrowODWUYwsA==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBiSlh4bkV3anpRTHcreEpV
+            UVF6aHJ5VjB2TWtMRitzeE0xT0QvYnMxSlZ3CnA1Q0ZZWWRhVVllU0hKQzVhUWdT
+            MHpYNWE2RE5xUjQvOExzcjIxMXhhT00KLS0tIGtVek5rZlN5WmkrbEpjR0FnVU13
+            MlFGZlpZWmNWMXpveE1ST21NQUFzbHcK/f9eZ2krI4to2WpluxKyHVaQdIqopoyx
+            upTksHU4olNzOis/e6FIkxKfh02KtKMaDwF1W4fcXFXyTmsl5qReUQ==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-26T13:40:14Z"
+    mac: ENC[AES256_GCM,data:YeSIgwlxB+NO36MMR5/IuiKwiQBrfmKXOcRiUlJLM7zzUIeuO7KBPSOGsm3Vvy1XIAGKAOWPSKkGfU1aTWPZOAkY2OgwQ+CXDbAvdTxn5sUPkqmjVp7eH2wbvEFRxr5ssCOEJ94vjf86XD5E9FfnCmIWVXsyokad+PAPVhnd5lA=,iv:x0DLWhXxkKIdnzOdde9TDG4krQ2IiffrFQkpK9xTD+c=,tag:UKZNYZ1Kl9DkSIzye3l1gQ==,type:str]
+    version: 3.13.3

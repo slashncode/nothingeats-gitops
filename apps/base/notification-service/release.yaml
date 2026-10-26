@@ -43,6 +43,11 @@ spec:
         secret: valkey-users
         key: default
     cronJobs:
+      # Manual only: rebuilds the recipients from identity.user.v1 (accounts older than the table).
+      - name: replay-identity
+        task: replay-identity
+        schedule: "0 4 1 1 *"
+        suspend: true
       - name: purge-messaging
         task: purge-messaging
         schedule: "30 3 * * *"
