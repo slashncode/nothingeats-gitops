@@ -6,5 +6,6 @@ resources:
   - ../base/catalog-service
   - ../base/identity-service
   - ../base/notification-service
+  - ../base/search-service
   - ../base/web
   - image-automation.yaml

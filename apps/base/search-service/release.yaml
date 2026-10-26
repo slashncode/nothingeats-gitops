@@ -1,0 +1,47 @@
+# Search is a read model: no database and no migrate hook. Its Elasticsearch indices are rebuilt
+# from the catalog topics (cron reindex), so losing them costs a reindex, not data.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: search-service
+  namespace: nothingeats
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: backend-service-chart
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  values:
+    image:
+      repository: ghcr.io/slashncode/nothingeats-search-service
+      tag: {"message":"You need at least read:packages scope to get a package's versions.","documentation_url":"https://docs.github.com/rest/packages/packages#list-package-versions-for-a-package-owned-by-a-user","status":"403"}gh: You need at least read:packages scope to get a package's versions. (HTTP 403) # {"$imagepolicy": "nothingeats:search-service:tag"}
+    migrations:
+      enabled: false
+    env:
+      ELASTICSEARCH__URL: http://search-es-http:9200
+      KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
+      JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
+    secretEnv:
+      ELASTICSEARCH__USERNAME:
+        secret: search-service-user
+        key: username
+      ELASTICSEARCH__PASSWORD:
+        secret: search-service-user
+        key: password
+      POSTHOG__PROJECT_TOKEN:
+        secret: posthog
+        key: project-token
+    cronJobs:
+      # Manual only, after a mapping change: kubectl -n nothingeats create job --from=cronjob/search-service-reindex reindex-$(date +%s)
+      - name: reindex
+        task: reindex
+        schedule: "0 4 1 1 *"
+        suspend: true
+    route:
+      enabled: true
