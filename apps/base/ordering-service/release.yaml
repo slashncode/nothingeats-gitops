@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-ordering-service
-      tag: main-32564ae-1793022169 # {"$imagepolicy": "nothingeats:ordering-service:tag"}
+      tag: main-99eabfb-1793023058 # {"$imagepolicy": "nothingeats:ordering-service:tag"}
     env:
       DATABASE__URL: jdbc:postgresql://postgres-rw:5432/ordering
       KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
