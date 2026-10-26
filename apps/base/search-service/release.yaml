@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-search-service
-      tag: {"message":"You need at least read:packages scope to get a package's versions.","documentation_url":"https://docs.github.com/rest/packages/packages#list-package-versions-for-a-package-owned-by-a-user","status":"403"}gh: You need at least read:packages scope to get a package's versions. (HTTP 403) # {"$imagepolicy": "nothingeats:search-service:tag"}
+      tag: main-669ce79-1793004230 # {"$imagepolicy": "nothingeats:search-service:tag"}
     migrations:
       enabled: false
     env:
