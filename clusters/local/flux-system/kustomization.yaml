@@ -3,3 +3,13 @@ kind: Kustomization
 resources:
 - gotk-components.yaml
 - gotk-sync.yaml
+patches:
+  # Dependents notice a finished dependency after 5 s instead of the default 30 s. Every commit
+  # walks crds -> controllers -> configs -> apps, so this saves about a minute and a half per deploy.
+  - patch: |
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --requeue-dependency=5s
+    target:
+      kind: Deployment
+      name: kustomize-controller
