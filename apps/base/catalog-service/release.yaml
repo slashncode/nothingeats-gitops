@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-catalog-service
-      tag: main-7b38712-1792877104 # {"$imagepolicy": "nothingeats:catalog-service:tag"}
+      tag: main-b0f5119-1793028740 # {"$imagepolicy": "nothingeats:catalog-service:tag"}
     env:
       DATABASE__URL: jdbc:postgresql://postgres-rw:5432/catalog
       KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
