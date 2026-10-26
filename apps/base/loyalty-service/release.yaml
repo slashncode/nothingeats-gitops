@@ -1,0 +1,44 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: loyalty-service
+  namespace: nothingeats
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: backend-service-chart
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  values:
+    image:
+      repository: ghcr.io/slashncode/nothingeats-loyalty-service
+      tag: main-283e04e-1793030281 # {"$imagepolicy": "nothingeats:loyalty-service:tag"}
+    env:
+      DATABASE__URL: jdbc:postgresql://postgres-rw:5432/loyalty
+      KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
+      JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
+    secretEnv:
+      DATABASE__USER:
+        secret: loyalty-db
+        key: username
+      DATABASE__PASSWORD:
+        secret: loyalty-db
+        key: password
+      POSTHOG__PROJECT_TOKEN:
+        secret: posthog
+        key: project-token
+    # Coupons for ordering's cart and checkout (LoyaltyService).
+    grpc:
+      enabled: true
+    cronJobs:
+      - name: purge-messaging
+        task: purge-messaging
+        schedule: "55 3 * * *"
+    route:
+      enabled: true

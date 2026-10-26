@@ -6,6 +6,7 @@ resources:
   - ../base/catalog-service
   - ../base/delivery-service
   - ../base/identity-service
+  - ../base/loyalty-service
   - ../base/notification-service
   - ../base/ordering-service
   - ../base/search-service

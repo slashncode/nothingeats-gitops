@@ -7,6 +7,7 @@ resources:
   - postgres-role-notification.sops.yaml
   - postgres-role-ordering.sops.yaml
   - postgres-role-delivery.sops.yaml
+  - postgres-role-loyalty.sops.yaml
   - postgres.yaml
   - mailpit-route.yaml
   - valkey-users.sops.yaml

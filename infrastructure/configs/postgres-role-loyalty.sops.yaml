@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: loyalty-db
+    namespace: nothingeats
+    labels:
+        cnpg.io/reload: "true"
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:mHoqbZuI4Q==,iv:O0g9YVDTAiLPPKn1hq0AvcO/YKPdfnfq5nXgTSKJqN4=,tag:5rHBqXaqYA0uac7CAGbtgQ==,type:str]
+    password: ENC[AES256_GCM,data:1JA6nTD5hLh2zawZZ3LrFerKuaqLuiOLzSczWMBmOOk=,iv:B6eCEdVMN+gbR7tyhijVKT/p1IIw3OGDJWt28FNi7GU=,tag:wN+KkSoGWebTibnr4m/fJQ==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBtSEloZW1Pb0l2MW92SWVF
+            YTA2NVdxeXcrc2FtOUtLZWVVbmZyakVxejNBCjczWWFBTkFJV1dydWtVU2FmUFg5
+            d0k4bURxRGovUkgvNTluR21UOC9nSXMKLS0tIDY4UlNiQjRtejBqaFZtVWZ6SmRn
+            TlFBeTFPem9kNnRDV0NkaFJBNTdCcWcKDlChDcDm+7rAShu4TVR5xd5v17gcrg59
+            EcxaWQ1LK/Ts+oD1t0m15midaKo/LSeI6SkIYLFDC3kgsjQOR1qK9A==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-26T16:00:07Z"
+    mac: ENC[AES256_GCM,data:R3sB7XsgbbVY3GV70i/XOoubynh5b/oh7FtJUmh2TpPB1IM8MK5GKn2GzF5kF0leimDSquw+epKhDj4IQpvNUquA4cek/YJFVCt1EcS/i7dvkKqT+SPJvOsAlBVmMu8Tm6RmCF5LhYFcIt/y4Zxmav3JEHSOBAXyI2ub5YYJeXg=,iv:FvkIyb/KZk9DKrfh28/SsMD/X23mmJnuJhjAHhehchU=,tag:X9LRiiYAwDYSGx3QUzBAZg==,type:str]
+    version: 3.13.3

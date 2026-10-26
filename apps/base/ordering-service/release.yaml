@@ -25,6 +25,8 @@ spec:
       JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
       # The first gRPC edge: quotes from delivery, round-robin over its pods (headless service).
       DELIVERY__TARGET: dns:///delivery-service-grpc:9090
+      # Coupons for cart and checkout, from loyalty (gRPC, headless service).
+      LOYALTY__TARGET: dns:///loyalty-service-grpc:9090
     secretEnv:
       DATABASE__USER:
         secret: ordering-db
