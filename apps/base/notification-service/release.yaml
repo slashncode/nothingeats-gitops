@@ -26,6 +26,9 @@ spec:
       SMTP__PORT: "25"
       LINKS__WEB_BASE_URL: http://nothingeats.localhost
       JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
+      # Live updates fan out between pods through Valkey pub/sub.
+      VALKEY__HOST: valkey
+      VALKEY__PORT: "6379"
     secretEnv:
       DATABASE__USER:
         secret: notification-db
@@ -36,7 +39,13 @@ spec:
       POSTHOG__PROJECT_TOKEN:
         secret: posthog
         key: project-token
+      VALKEY__PASSWORD:
+        secret: valkey-users
+        key: default
     cronJobs:
       - name: purge-messaging
         task: purge-messaging
         schedule: "30 3 * * *"
+    # /api/notification: the live update stream (server-sent events).
+    route:
+      enabled: true
