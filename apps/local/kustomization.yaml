@@ -10,5 +10,6 @@ resources:
   - ../base/notification-service
   - ../base/ordering-service
   - ../base/search-service
+  - ../base/social-service
   - ../base/web
   - image-automation.yaml

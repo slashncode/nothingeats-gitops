@@ -1,0 +1,47 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: social-service
+  namespace: nothingeats
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: backend-service-chart
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  values:
+    image:
+      repository: ghcr.io/slashncode/nothingeats-social-service
+      tag: main-5c30573-1793207615 # {"$imagepolicy": "nothingeats:social-service:tag"}
+    env:
+      DATABASE__URL: jdbc:postgresql://postgres-rw:5432/social
+      KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
+      JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
+      # Weekly leaderboards (sorted sets) and the live feed's fan-out between pods (pub/sub).
+      VALKEY__HOST: valkey
+      VALKEY__PORT: "6379"
+    secretEnv:
+      DATABASE__USER:
+        secret: social-db
+        key: username
+      DATABASE__PASSWORD:
+        secret: social-db
+        key: password
+      POSTHOG__PROJECT_TOKEN:
+        secret: posthog
+        key: project-token
+      VALKEY__PASSWORD:
+        secret: valkey-users
+        key: default
+    cronJobs:
+      - name: purge-messaging
+        task: purge-messaging
+        schedule: "5 4 * * *"
+    route:
+      enabled: true

@@ -48,6 +48,11 @@ spec:
         login: true
         passwordSecret:
           name: loyalty-db
+      - name: social
+        ensure: present
+        login: true
+        passwordSecret:
+          name: social-db
 ---
 # Postgres from the host on localhost:15432 (k3d maps 15432 -> NodePort 30432).
 apiVersion: v1
