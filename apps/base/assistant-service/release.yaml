@@ -1,0 +1,62 @@
+# The Craving Coach (TypeScript): the same backend-service chart as the Kotlin services, the same
+# modes (serve, migrate as hook Job, cron purge-conversations). Chats with OpenAI, retrieves from
+# search-service over gRPC on the customer's behalf.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: assistant-service
+  namespace: nothingeats
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: backend-service-chart
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  values:
+    image:
+      repository: ghcr.io/slashncode/nothingeats-assistant-service
+      tag: main-79794ce-1793369695 # {"$imagepolicy": "nothingeats:assistant-service:tag"}
+    env:
+      DATABASE__URL: postgres://postgres-rw:5432/assistant
+      KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
+      JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
+      VALKEY__HOST: valkey
+      VALKEY__PORT: "6379"
+      SEARCH__TARGET: http://search-service-grpc:9090
+      AI__PROVIDER: OPENAI
+    secretEnv:
+      DATABASE__USER:
+        secret: assistant-db
+        key: username
+      DATABASE__PASSWORD:
+        secret: assistant-db
+        key: password
+      VALKEY__PASSWORD:
+        secret: valkey-users
+        key: default
+      POSTHOG__PROJECT_TOKEN:
+        secret: posthog
+        key: project-token
+      OPENAI__API_KEY:
+        secret: openai
+        key: api-key
+    # Node needs less than the JVM services.
+    resources:
+      requests:
+        cpu: 50m
+        memory: 160Mi
+      limits:
+        memory: 384Mi
+    cronJobs:
+      # Conversations are kept 30 days after their last message.
+      - name: purge-conversations
+        task: purge-conversations
+        schedule: "35 3 * * *"
+    route:
+      enabled: true
