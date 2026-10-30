@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-social-service
-      tag: main-b83b477-1793376309 # {"$imagepolicy": "nothingeats:social-service:tag"}
+      tag: main-b83b477-1793377349 # {"$imagepolicy": "nothingeats:social-service:tag"}
     env:
       DATABASE__URL: jdbc:postgresql://postgres-rw:5432/social
       KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
