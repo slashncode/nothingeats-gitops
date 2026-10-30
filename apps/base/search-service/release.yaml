@@ -21,7 +21,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-search-service
-      tag: main-99c80da-1793368312 # {"$imagepolicy": "nothingeats:search-service:tag"}
+      tag: main-21c4d1d-1793373333 # {"$imagepolicy": "nothingeats:search-service:tag"}
     migrations:
       enabled: false
     env:
