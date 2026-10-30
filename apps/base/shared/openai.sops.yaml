@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: openai
+    namespace: nothingeats
+type: Opaque
+stringData:
+    api-key: ENC[AES256_GCM,data:DUnIZgn/4oEkV/a3ZMzB3yFlZsNQQp/QLcQwVql6OOXflfO0K4NiY0HavcgK3D6n15rVqWJ+MmRvpnGN6UUiFrpFPaw6CNLZMgheLXuRyHgC0bdWuaV8uHaylKTikveZLDOE0AYR6EXfOilJOLw/5YF/dem+rWvKiQR1uw5GQj0SKZXSjokh2gcpADH/toeW5RVeYRaweSfZeQH+BVzrvH644nA=,iv:ELbI9Y2Ad4/TT2nLGJSeGcT+vHODVgj9QdnW2dWLXr0=,tag:aslJmWnY9oQsE919CPJEJg==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBPUVlaTzczL1FuME43MmRq
+            Q0ZwSFNEZldEVFJJZzBhU0pSZHRWb2lmVW5VCkxnWTZyWi9ud1FWcDVMSVFrWW5P
+            aENhbFF2M1pIL1NFbmZhTUNRb0p6Rm8KLS0tIEdWWWlYNERNSDJlT0syNjdwZVkz
+            UEZEQnpKcWZsUnl4NmkrSk90TEtiZmMKR98ntdM/bTy8HlG/E4fHdS294KOc6tdj
+            2vBTFpyPVTv/0t6cVfVFdEWdFDKQq/N56yrQnnPN1HutcRylWHCQgg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-30T13:21:29Z"
+    mac: ENC[AES256_GCM,data:/BNLU3q+Yj8+z6vVQQWT+dM0m2iBSqrFItvUI1aTXn+q6utvtHlrKlQzhAEwkUN8AgXOIbcaOHJMMHPES8A5Abf5lcFG6YlT+acX72j8fgIKHrOglwqeFQBVB/FLBe2r+kaRV16JxOLh9o01Dty8AMAxkZxTv9SReguJY3bTeU4=,iv:t2kegPeobrrcPKNa9k2DRnh0R7G1zON4fT//uo9dkHY=,tag:4gm//onATzVyZR4JGWSmsQ==,type:str]
+    version: 3.13.3

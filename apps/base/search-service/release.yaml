@@ -1,5 +1,6 @@
 # Search is a read model: no database and no migrate hook. Its Elasticsearch indices are rebuilt
-# from the catalog topics (cron reindex), so losing them costs a reindex, not data.
+# from the catalog topics (cron reindex), so losing them costs a reindex, not data. It also serves
+# the Craving Coach's retrieval over gRPC, with dish and query embeddings from OpenAI (cached in Valkey).
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -27,6 +28,9 @@ spec:
       ELASTICSEARCH__URL: http://search-es-http:9200
       KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
       JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
+      VALKEY__HOST: valkey
+      VALKEY__PORT: "6379"
+      EMBEDDINGS__PROVIDER: OPENAI
     secretEnv:
       ELASTICSEARCH__USERNAME:
         secret: search-service-user
@@ -37,8 +41,17 @@ spec:
       POSTHOG__PROJECT_TOKEN:
         secret: posthog
         key: project-token
+      VALKEY__PASSWORD:
+        secret: valkey-users
+        key: default
+      EMBEDDINGS__OPENAI__API_KEY:
+        secret: openai
+        key: api-key
+    # Retrieval for the assistant (SearchService).
+    grpc:
+      enabled: true
     cronJobs:
-      # Manual only, after a mapping change: kubectl -n nothingeats create job --from=cronjob/search-service-reindex reindex-$(date +%s)
+      # Manual only, after a mapping or embedding change: kubectl -n nothingeats create job --from=cronjob/search-service-reindex reindex-$(date +%s)
       - name: reindex
         task: reindex
         schedule: "0 4 1 1 *"
