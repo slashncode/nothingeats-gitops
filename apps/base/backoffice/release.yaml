@@ -1,0 +1,73 @@
+# The backoffice (Payload 4 on TanStack Start, record 040): the CMS that owns the shop's content and
+# publishes it through its outbox. Same chart as the services; the admin lives under /admin and its
+# API under /api/backoffice on the shop's origin, so identity's login and refresh cookie work as in
+# the shop. Payload migrates on start (one replica), hence no migrate hook.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: backoffice
+  namespace: nothingeats
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: backend-service-chart
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  values:
+    image:
+      repository: ghcr.io/slashncode/nothingeats-backoffice
+      tag: TAG # {"$imagepolicy": "nothingeats:backoffice:tag"}
+    env:
+      DATABASE__URL: postgres://postgres-rw:5432/backoffice
+      KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
+      IDENTITY__URL: http://identity-service/api/identity
+      JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
+      S3__ENDPOINT: http://garage:3900
+      SEED__ON_EMPTY: "true"
+    secretEnv:
+      DATABASE__USER:
+        secret: backoffice-db
+        key: username
+      DATABASE__PASSWORD:
+        secret: backoffice-db
+        key: password
+      PAYLOAD__SECRET:
+        secret: backoffice-payload
+        key: secret
+      S3__ACCESS_KEY:
+        secret: garage-keys
+        key: accessKey
+      S3__SECRET_KEY:
+        secret: garage-keys
+        key: secretKey
+    probes:
+      startup:
+        path: /api/backoffice/health/live
+        periodSeconds: 2
+        failureThreshold: 60
+      liveness:
+        path: /api/backoffice/health/live
+        periodSeconds: 10
+        failureThreshold: 3
+      readiness:
+        path: /api/backoffice/health/ready
+        periodSeconds: 5
+        failureThreshold: 2
+    migrations:
+      enabled: false
+    # React server rendering and Payload's admin need more than the small Node services.
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        memory: 768Mi
+    # /api/backoffice from the chart; /admin in admin-route.yaml.
+    route:
+      enabled: true

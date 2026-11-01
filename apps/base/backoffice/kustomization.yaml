@@ -3,3 +3,7 @@ kind: Kustomization
 resources:
   - database.yaml
   - topics.yaml
+  - payload-secret.sops.yaml
+  - image.yaml
+  - release.yaml
+  - admin-route.yaml
