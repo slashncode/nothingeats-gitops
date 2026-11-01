@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - posthog.sops.yaml
   - openai.sops.yaml
+  - posthog-flags.sops.yaml

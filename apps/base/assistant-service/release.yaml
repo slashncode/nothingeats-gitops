@@ -46,6 +46,10 @@ spec:
       OPENAI__API_KEY:
         secret: openai
         key: api-key
+      # The craving-coach flag, evaluated locally (no person data to PostHog for the decision).
+      POSTHOG__FLAGS_SECRET_KEY:
+        secret: posthog-flags
+        key: secret-key
     # Node needs less than the JVM services.
     resources:
       requests:
