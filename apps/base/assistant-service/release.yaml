@@ -21,7 +21,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-assistant-service
-      tag: main-99c53c4-1793546911 # {"$imagepolicy": "nothingeats:assistant-service:tag"}
+      tag: main-019ffc0-1793566645 # {"$imagepolicy": "nothingeats:assistant-service:tag"}
     env:
       DATABASE__URL: postgres://postgres-rw:5432/assistant
       KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
