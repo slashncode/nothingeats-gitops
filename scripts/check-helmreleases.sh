@@ -26,6 +26,29 @@ grep -rlE '^kind: HelmRelease' --include='*.yaml' infrastructure apps | while re
     done
 done
 
+# Charts that only live in a git repository (Garage): fetch the chart folder at the pinned tag.
+grep -rlE '^kind: HelmRelease' --include='*.yaml' infrastructure apps | while read -r file; do
+    count=$(yq ea '[select(.kind == "HelmRelease" and .spec.chart.spec.sourceRef.kind == "GitRepository")] | length' "$file")
+    for ((i = 0; i < count; i++)); do
+        release=$(yq ea "[select(.kind == \"HelmRelease\" and .spec.chart.spec.sourceRef.kind == \"GitRepository\")] | .[$i]" "$file")
+        name=$(yq '.metadata.name' <<<"$release")
+        chart=$(yq '.spec.chart.spec.chart' <<<"$release")
+        repo_name=$(yq '.spec.chart.spec.sourceRef.name' <<<"$release")
+        source=$(yq ea "select(.kind == \"GitRepository\" and .metadata.name == \"$repo_name\")" "$file")
+        if [[ -z "$source" ]]; then
+            echo "::error file=$file::GitRepository $repo_name for $name must be in the same file"
+            exit 1
+        fi
+        url=$(yq '.spec.url' <<<"$source")
+        tag=$(yq '.spec.ref.tag' <<<"$source")
+        git clone --quiet --depth 1 --filter=blob:none --sparse --branch "$tag" "$url" "$work/$name-src" 2> /dev/null
+        git -C "$work/$name-src" sparse-checkout set "${chart#./}"
+        yq '.spec.values // {}' <<<"$release" > "$work/$name-values.yaml"
+        echo "== $name ($url $tag $chart)"
+        helm template "$name" "$work/$name-src/${chart#./}" -f "$work/$name-values.yaml" > /dev/null
+    done
+done
+
 # Apps use the shared charts through an OCIRepository (chartRef). Render them with their values
 # and make sure every image tag is a plain CI tag, so a bad tag fails here and not in the cluster.
 grep -rlE '^kind: HelmRelease' --include='*.yaml' apps | while read -r file; do

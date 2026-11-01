@@ -1,0 +1,194 @@
+# Garage: S3-compatible object storage for images (restaurants, dishes, articles). One node, one
+# bucket `media`: public through Garage's website endpoint at nothingeats.localhost/media/*, writes
+# only with the backoffice's key (secret garage-keys: accessKey, secretKey).
+# In the cluster: S3 API http://garage:3900 (region garage), website http://garage:3902.
+# Garage ships its chart only in its repository, so Flux reads it from git.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: garage
+  namespace: nothingeats
+spec:
+  interval: 12h
+  url: https://github.com/deuxfleurs-org/garage
+  ref:
+    tag: v2.5.0
+  ignore: |
+    /*
+    !/script/helm/garage/
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: garage
+  namespace: nothingeats
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: ./script/helm/garage
+      reconcileStrategy: Revision
+      sourceRef:
+        kind: GitRepository
+        name: garage
+  values:
+    garage:
+      # `--single-node` assigns and applies the layout itself; no manual `garage layout` step.
+      singleNode: true
+      existingRpcSecret: garage-keys
+      s3:
+        web:
+          rootDomain: .web.garage.localhost
+    image:
+      # Multi-arch; the chart's default image is amd64 only.
+      repository: dxflrs/garage
+    persistence:
+      meta:
+        size: 128Mi
+      data:
+        size: 2Gi
+    environment:
+      - name: GARAGE_DEFAULT_BUCKET
+        value: media
+      - name: GARAGE_DEFAULT_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: garage-keys
+            key: accessKey
+      - name: GARAGE_DEFAULT_SECRET_KEY
+        valueFrom:
+          secretKeyRef:
+            name: garage-keys
+            key: secretKey
+    readinessProbe:
+      httpGet:
+        path: /health
+        port: 3903
+      periodSeconds: 10
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: 3903
+      periodSeconds: 30
+    resources:
+      requests:
+        cpu: 20m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+  postRenderers:
+    # The chart starts `garage server --single-node`; the key and bucket from the environment need
+    # `--default-bucket` too (it creates both on start and gives the key read, write and owner).
+    - kustomize:
+        patches:
+          - target:
+              kind: StatefulSet
+              name: garage
+            patch: |
+              - op: replace
+                path: /spec/template/spec/containers/0/args
+                value: [server, --single-node, --default-bucket]
+---
+# Website mode makes `media` readable without a key. Idempotent; the TTL lets Flux run it again
+# after a while, so a fresh Garage volume heals by itself.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: garage-media-website
+  namespace: nothingeats
+  annotations:
+    kustomize.toolkit.fluxcd.io/force: enabled
+spec:
+  ttlSecondsAfterFinished: 3600
+  backoffLimit: 6
+  template:
+    spec:
+      restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: website
+          image: curlimages/curl:8.17.0
+          args:
+            - --silent
+            - --show-error
+            - --fail-with-body
+            - --retry
+            - "30"
+            - --retry-delay
+            - "2"
+            - --retry-all-errors
+            - --aws-sigv4
+            - aws:amz:garage:s3
+            - --user
+            - $(ACCESS_KEY):$(SECRET_KEY)
+            - --request
+            - PUT
+            - --header
+            - "Content-Type: application/xml"
+            - --data-binary
+            - <WebsiteConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><IndexDocument><Suffix>index.html</Suffix></IndexDocument></WebsiteConfiguration>
+            - http://garage:3900/media?website
+          env:
+            - name: ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: garage-keys
+                  key: accessKey
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: garage-keys
+                  key: secretKey
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 32Mi
+---
+# nothingeats.localhost/media/<key> → the website endpoint of bucket `media`. Uploads come from
+# editors, so the files get no say: no sniffing, and a sandbox CSP in case an image is not one.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: media
+  namespace: nothingeats
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: traefik
+  hostnames:
+    - nothingeats.localhost
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /media/
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            hostname: media.web.garage.localhost
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            set:
+              - name: X-Content-Type-Options
+                value: nosniff
+              - name: Content-Security-Policy
+                value: "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox"
+              - name: Cache-Control
+                value: public, max-age=86400
+      backendRefs:
+        - name: garage
+          port: 3902

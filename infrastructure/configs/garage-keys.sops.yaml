@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: garage-keys
+    namespace: nothingeats
+type: Opaque
+stringData:
+    rpcSecret: ENC[AES256_GCM,data:9PGCc0iraY6whHj51prBaTJlPNnVcrlk3/KwViDzUHtTekYAn2DJ6Z5M0g4ChF0RCCUVR58F5qTDCYKiS+LnGw==,iv:Pc29cseUpP0B62ob5ie1vMTrySfiD+nVYdxwM7CQ11g=,tag:lCC55XJ7+9Kb1IE7o/tBkA==,type:str]
+    accessKey: ENC[AES256_GCM,data:P5DJAKXK/1rIKiQQyRPILE2Sz11XBBtfJNc=,iv:wEiMF7kj+zByyKajUAiat97tnklvsCmrR65BzojzIG0=,tag:Uful6iIhAWct1crNLoSA4Q==,type:str]
+    secretKey: ENC[AES256_GCM,data:TlIvD8OqQyAMjgi8v/J0PN+mzp+1c/6vDDNs2tZObb58XOYwBkKYhZ/yvN4ppcLPbgpSE/rFq9hQpAEMRUk9ew==,iv:yGYwugI89LCWHMcRRJnOwRPI2OZIY+uE4xDNjqV8hF0=,tag:ab0W/Dm3M42T9a/YZtyWhw==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA0dlRRbzhRaXYyY1hua2gw
+            Mi8ramlqOHNZeVd6dTFOS1FMMWtYY3VaTVJRCmd0UzlUeGlFWFBUN2xDQ2p4Z2Nu
+            SFNmTWVTVk9xOWxLRjBYRG9yM3hBRTgKLS0tIGZ2YjYwYkkzcllUUS9SQms5QUhJ
+            NW1tNDZVV2RnZUs0NDBmbTcyRnl0akUKRh7QYtz8oQ59mvW7ScGmV0ChmqTT53kr
+            WXbsTmOoBKpvqhj5FJo/HXX8vPSyLGHsfDiYNefT0OBnNghlJByjAQ==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-11-01T18:21:02Z"
+    mac: ENC[AES256_GCM,data:Eh+h8+L8HQECep9QMMD5uQdQ1rDh26zTeweBJSjvrClK0To7FioXeE0pDrmCJIc+btiFxb3bQ0Wn2mTgA24N8l6KrrowjnQ3At/ApoZiN/mr2mS8FDSrhm8xwx5vowg0gov+4m+G9IIKgfbNOWwfc8CJnKonD0Ulgx+7KYzoOKw=,iv:0il1eDJd9ns+xPuGOoLSF+gEyrCyvtFRgIZgtxItpSk=,tag:BjX13T60ntk4qXyqBrfoCg==,type:str]
+    version: 3.13.3

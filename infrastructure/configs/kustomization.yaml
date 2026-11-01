@@ -14,6 +14,8 @@ resources:
   - mailpit-route.yaml
   - valkey-users.sops.yaml
   - valkey.yaml
+  - garage-keys.sops.yaml
+  - garage.yaml
   - kafka.yaml
   - search-service-role.sops.yaml
   - search-service-user.sops.yaml
