@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: backoffice
+  namespace: nothingeats
+spec:
+  name: backoffice
+  owner: backoffice
+  cluster:
+    name: postgres

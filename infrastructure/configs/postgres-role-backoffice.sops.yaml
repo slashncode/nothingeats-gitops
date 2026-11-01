@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: backoffice-db
+    namespace: nothingeats
+    labels:
+        cnpg.io/reload: "true"
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:4FahHMOOOs/ODQ==,iv:ytPCvS/xw29FBVxFTf/RbBPIEus0UWRZT3Ho/e9+ap0=,tag:Zms1IzogzvCh/X150qemLw==,type:str]
+    password: ENC[AES256_GCM,data:NgM4jNETvOlTLbPHa6DV14hNsADMR8vw5YcSpKMRyttkJ1urZ5xTjallyUSF61Lr,iv:1qDFqWe1LJSwyXFmNr37kbhKPF+dYP4+ZJeoAk+JxZ8=,tag:sDL1hz/eHBELOQmrHiyRGw==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBKb3pNSGRnaXpVUmR4ZWxV
+            eDRGMGRaV3hqa2RXRmZXSTEyRWdTbVhiWGlFCk5KYldCRXgyYzIxcXRDbW1TRzVY
+            em1wY0hyM21BYnhsZEQ4aGtERDRwOFkKLS0tIGNPOGoxcjJQL3FSc2kyNXdOY1Rz
+            V05KRm9ld2xIc3BvSUJuMVU2Vk5wQXcKMYHXL4jjp5XT7GTwEnankTH70lGL+mUX
+            Ebx+tAiphIRPXz9LLXcQGP3qk7KIbMRN8czH2tL67vNRD9I/QE2s+Q==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-11-01T18:30:55Z"
+    mac: ENC[AES256_GCM,data:f1erYipwizN3ULx/BnnnD3JibSJjbsSCw+qxwFZjeAUDr9V9phtITrV0u5xv5EjBvXV8hCHnLhnlE/Lxw8h1wFh3mBw/g5mahfxjhsn23Q9A8R5Jg0VBIzEIv5vygwUD10ngptth4Abrg5iqKdmZ99Yd9ChiN20/A3+S0u7mTKs=,iv:Q8jAjQvgpmA//hTl1nkveHuPVUycA8PdgE3en2yzE0k=,tag:kuZ1qReQDx+w/b/dewW7AA==,type:str]
+    version: 3.13.3

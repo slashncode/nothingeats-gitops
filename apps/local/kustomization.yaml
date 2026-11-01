@@ -4,6 +4,7 @@ resources:
   - ../base/sources
   - ../base/shared
   - ../base/assistant-service
+  - ../base/backoffice
   - ../base/catalog-service
   - ../base/delivery-service
   - ../base/identity-service
