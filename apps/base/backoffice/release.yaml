@@ -30,6 +30,8 @@ spec:
       JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
       S3__ENDPOINT: http://garage:3900
       SEED__ON_EMPTY: "true"
+      # The shop's published default texts, read from inside the cluster (record 042).
+      TEXTS__DEFAULTS_URL: http://web/locales
     secretEnv:
       DATABASE__USER:
         secret: backoffice-db
