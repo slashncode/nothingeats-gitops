@@ -39,3 +39,17 @@ spec:
   replicas: 1
   config:
     cleanup.policy: compact
+---
+# Backoffice events catalog could not apply (a rule the backoffice cannot check, e.g. a slug taken).
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: catalog-service.dlq
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: "2592000000"

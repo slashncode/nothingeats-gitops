@@ -34,11 +34,6 @@ spec:
         secret: posthog
         key: project-token
     cronJobs:
-      # Manual only: kubectl -n nothingeats create job --from=cronjob/catalog-service-load-seed seed-$(date +%s)
-      - name: load-seed
-        task: load-seed
-        schedule: "0 5 1 1 *"
-        suspend: true
       - name: purge-messaging
         task: purge-messaging
         schedule: "30 3 * * *"
