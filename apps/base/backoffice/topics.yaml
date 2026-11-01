@@ -1,0 +1,85 @@
+# Owned by the backoffice (Payload, record 040), written through its outbox. Compacted: every event is a
+# full snapshot keyed by document id, so a consumer can rebuild from the start of the topic.
+# Restaurants as published in the backoffice; catalog consumes them.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: backoffice.restaurant.v1
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    cleanup.policy: compact
+---
+# Dishes as published in the backoffice; catalog consumes them.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: backoffice.dish.v1
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    cleanup.policy: compact
+---
+# Flash deals scheduled by editors; catalog consumes them.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: backoffice.deal.v1
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    cleanup.policy: compact
+---
+# The deal planner's settings (one key); catalog consumes them.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: backoffice.deal-planner.v1
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    cleanup.policy: compact
+---
+# Badges and their rules; loyalty consumes them.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: backoffice.badge.v1
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    cleanup.policy: compact
+---
+# The wheel's prizes and odds profiles (one key); loyalty consumes them.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: backoffice.wheel.v1
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    cleanup.policy: compact
