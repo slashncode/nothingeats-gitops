@@ -4,4 +4,5 @@ resources:
   - database.yaml
   - topics.yaml
   - image.yaml
+  - vapid.sops.yaml
   - release.yaml

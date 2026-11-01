@@ -42,6 +42,13 @@ spec:
       VALKEY__PASSWORD:
         secret: valkey-users
         key: default
+      # Web push (VAPID); without them push is off and the shop hides the switch.
+      PUSH__PUBLIC_KEY:
+        secret: notification-vapid
+        key: public-key
+      PUSH__PRIVATE_KEY:
+        secret: notification-vapid
+        key: private-key
     cronJobs:
       # Manual only: rebuilds the recipients from identity.user.v1 (accounts older than the table).
       - name: replay-identity
@@ -51,6 +58,6 @@ spec:
       - name: purge-messaging
         task: purge-messaging
         schedule: "30 3 * * *"
-    # /api/notification: the live update stream (server-sent events).
+    # /api/notification: the live update stream (server-sent events) and web push subscriptions.
     route:
       enabled: true

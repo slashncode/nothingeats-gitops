@@ -1,0 +1,26 @@
+# VAPID key pair for web push (base64url, uncompressed P-256, as browsers use it).
+# The public key is public (GET /api/notification/v1/push/key); the private key signs our pushes.
+apiVersion: v1
+kind: Secret
+metadata:
+    name: notification-vapid
+    namespace: nothingeats
+type: Opaque
+stringData:
+    public-key: ENC[AES256_GCM,data:ZHN0843eaRN3UMj011sTSXEebsAyrOcCSMbE+42TuVpH9YOGAvKX0wdBvJhgyJoSRjcBcx+YfL86CKB6Of0MZj8q2E5wTO6I/Ya14ekL6T7D+K1UH+1f,iv:q8oeEH9e3Z3ZnmATYzuCf4TEmj9Rhtl8I2qkVhN/CrA=,tag:b/lVmQpN0DAok1dZeodF8w==,type:str]
+    private-key: ENC[AES256_GCM,data:4WsCoB1iTDB5uPi5xUz4KSIRbduWihz6+0hmn/VDUOwsgV05aFSgF4uXwg==,iv:8QnrxxTohT3pdJGxgRZOo2+pbHxlU9rVKv9EQTn34hI=,tag:E1PtDq57EXC/H2f5SIHiIQ==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBvYy9YMHpEZmdxTzhlV2dn
+            UC9QeDEyS3BCNW9EYTcvalUwTXRtRWRRbDBnCkp3TElhVUh2VGIraFUvMVZWRXBh
+            MytGa0VBKzdjaE8wSXgwWUozb0xaZUUKLS0tIHN2RkszM1MyU2t5VWVSRUZ4ZHNO
+            VGZkdTVJNktYUk5XUUIrTUNHMnV4NzAKdcdbjbdexL834Waj7XOoEXSkUG80bmqj
+            ti42ajZDS3NKsJ7ltdwTlXbmfzqdAUF2s2aa1qyAQHs1up1m0Or0XA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1gnqpd2zcl3fdlghjrlnn260t36rx3sfv5ju3agc26wmdmey494wqlex3tx
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-11-01T21:33:47Z"
+    mac: ENC[AES256_GCM,data:nkZ9DO5uwzGsmDq3yiUroeZXaBR/Fi16tPHScLeo5Kw6PLE+PfXpGoXRTZl5MExJ0VtGQuOwV7JlGFBcLr0Sq56w7saAmDuo1S/IY84JVKaka8XTXS0j2KeQcW6SI8qDCVkT7eiOS6ffNehGpzARwcY0pv79PlJBKLidmuSnbHs=,iv:5DXxJQ0h7hsbiB99uqlFhk+qMW/CQ+Uzix/8ouJKsVk=,tag:uCXTuH6HcBCzcwTDzFClHg==,type:str]
+    version: 3.13.3
