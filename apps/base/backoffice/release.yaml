@@ -22,7 +22,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-backoffice
-      tag: main-038d168-1793621605 # {"$imagepolicy": "nothingeats:backoffice:tag"}
+      tag: main-4095ab1-1793623083 # {"$imagepolicy": "nothingeats:backoffice:tag"}
     env:
       DATABASE__URL: postgres://postgres-rw:5432/backoffice
       KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
