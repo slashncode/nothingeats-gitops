@@ -27,6 +27,10 @@ spec:
       DATABASE__URL: postgres://postgres-rw:5432/backoffice
       KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
       IDENTITY__URL: http://identity-service/api/identity
+      # Admin APIs behind the operations views (orders, coach transcripts, search index).
+      ORDERING__URL: http://ordering-service/api/ordering
+      ASSISTANT__URL: http://assistant-service/api/assistant
+      SEARCH__URL: http://search-service/api/search
       JWT__JWKS_URL: http://identity-service/api/identity/.well-known/jwks.json
       S3__ENDPOINT: http://garage:3900
       SEED__ON_EMPTY: "true"
