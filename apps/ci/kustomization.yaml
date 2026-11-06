@@ -1,0 +1,73 @@
+# Apps for the throwaway CI cluster (clusters/ci, used by nothingeats-e2e): the local cluster's
+# apps, minus what a test run must not have or touch.
+# - No SOPS secrets: clusters/ci/secrets.sh creates them with random values.
+# - No image automation: CI tests the tags on this branch and never commits.
+# - No outside services: no PostHog (test traffic stays out of the analytics), no OpenAI (the
+#   coach runs its scripted model, search embeds with feature hashing).
+# - Deliveries at 0.02 time scale: a 30-minute delivery takes 36 seconds.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../local
+patches:
+  - target:
+      kind: Secret
+    patch: |
+      $patch: delete
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: any
+  - target:
+      group: image.toolkit.fluxcd.io
+    patch: |
+      $patch: delete
+      apiVersion: image.toolkit.fluxcd.io/v1
+      kind: ImagePolicy
+      metadata:
+        name: any
+  - target:
+      kind: HelmRelease
+      name: ^(assistant|catalog|delivery|identity|loyalty|notification|ordering|search|social)-service$
+    patch: |
+      - op: remove
+        path: /spec/values/secretEnv/POSTHOG__PROJECT_TOKEN
+  - target:
+      kind: HelmRelease
+      name: web
+    patch: |
+      - op: remove
+        path: /spec/values/secretEnv/POSTHOG_KEY
+  - target:
+      kind: HelmRelease
+      name: identity-service
+    patch: |
+      - op: remove
+        path: /spec/values/secretEnv/POSTHOG__PERSONAL_API_KEY
+  - target:
+      kind: HelmRelease
+      name: assistant-service
+    patch: |
+      - op: remove
+        path: /spec/values/secretEnv/POSTHOG__FLAGS_SECRET_KEY
+      - op: remove
+        path: /spec/values/secretEnv/OPENAI__API_KEY
+      - op: replace
+        path: /spec/values/env/AI__PROVIDER
+        value: DEMO
+  - target:
+      kind: HelmRelease
+      name: search-service
+    patch: |
+      - op: remove
+        path: /spec/values/secretEnv/EMBEDDINGS__OPENAI__API_KEY
+      - op: replace
+        path: /spec/values/env/EMBEDDINGS__PROVIDER
+        value: HASHING
+  - target:
+      kind: HelmRelease
+      name: delivery-service
+    patch: |
+      - op: replace
+        path: /spec/values/env/SIMULATION__TIME_SCALE
+        value: "0.02"

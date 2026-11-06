@@ -16,3 +16,4 @@ Flux GitOps repo for NothingEats. The cross-repo plan and session rules live in 
 - Image tags in `release.yaml` are written by Flux image automation (setter markers); do not change them by hand except for the very first deploy.
 - Pin chart versions exactly; Renovate bumps them.
 - Infrastructure goes through the stages crds → controllers → configs; apps depend on configs.
+- `clusters/ci` (nothingeats-e2e) never gets the age key: a new `*.sops.yaml` needs a matching line in `clusters/ci/secrets.sh`, and a new variable for an outside service (PostHog, OpenAI) is removed in `apps/ci`.

@@ -1,0 +1,51 @@
+# The throwaway CI cluster of nothingeats-e2e. Same stages as clusters/local, but configs come
+# from infrastructure/ci (no SOPS secrets, so no decryption) and every image is pulled for the
+# first time, hence the longer timeouts. Flux is installed by the e2e workflow, not bootstrapped:
+# it reads this repo over HTTPS and never writes to it.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-crds
+  namespace: flux-system
+spec:
+  interval: 1h
+  path: ./infrastructure/crds
+  prune: true
+  wait: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-controllers
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infra-crds
+  interval: 1h
+  timeout: 15m
+  path: ./infrastructure/controllers
+  prune: true
+  wait: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infra-controllers
+  interval: 1h
+  timeout: 15m
+  path: ./infrastructure/ci
+  prune: true
+  wait: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system

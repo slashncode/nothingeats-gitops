@@ -8,14 +8,18 @@ Flux configuration for every [NothingEats](https://github.com/slashncode/nothing
 clusters/local/            Flux entry point for the local k3d cluster (flux-system/ is written by bootstrap)
   infrastructure.yaml      infra-crds → infra-controllers → infra-configs
   apps.yaml                apps (after infra-configs)
+clusters/ci/               the throwaway cluster of nothingeats-e2e (Flux installed, not bootstrapped)
+  secrets.sh               creates every secret with random values; the CI cluster never gets the age key
 infrastructure/
   crds/                    Gateway API CRDs v1.6.3 (standard channel), straight from kubernetes-sigs/gateway-api
   controllers/             Traefik (Gateway API), CloudNativePG operator, Mailpit
   configs/                 namespace nothingeats, Postgres cluster + per-service roles, routes for infra UIs
+  ci/                      configs without the SOPS secrets (clusters/ci)
 apps/
   base/sources/            the backend-service chart from GHCR, accepted only with a valid cosign signature
   base/<service>/          HelmRelease, Database, ImageRepository + ImagePolicy
   local/                   what runs locally, plus the ImageUpdateAutomation
+  ci/                      local minus secrets and image automation; no PostHog or OpenAI, deliveries at 0.02
 ```
 
 Each stage waits for the previous one to be healthy, so CRDs exist before controllers and controllers before the resources that need them.
@@ -31,6 +35,8 @@ Each stage waits for the previous one to be healthy, so CRDs exist before contro
 
 Secrets are committed encrypted with [SOPS](https://github.com/getsops/sops) + age (`.sops.yaml`); only `data`/`stringData` are encrypted. Flux decrypts them with the key in `flux-system/sops-age`. CI rejects any `Secret` that is not encrypted.
 
+The CI cluster (`clusters/ci`, used by [nothingeats-e2e](https://github.com/slashncode/nothingeats-e2e)) never gets the key: `infrastructure/ci` and `apps/ci` drop every SOPS secret, and `clusters/ci/secrets.sh` creates the same names with random values. A new `*.sops.yaml` needs a line there too.
+
 ```bash
 sops apps/base/<service>/<name>.sops.yaml     # edit in place (needs SOPS_AGE_KEY_FILE)
 ```
@@ -39,7 +45,8 @@ sops apps/base/<service>/<name>.sops.yaml     # edit in place (needs SOPS_AGE_KE
 
 1. `infrastructure/configs/postgres.yaml`: add the role; `postgres-roles.sops.yaml`: add its credentials secret.
 2. `apps/base/<service>/`: `release.yaml`, `database.yaml`, `image.yaml`, `kustomization.yaml` (copy `catalog-service`).
-3. Add it to `apps/local/kustomization.yaml`.
+3. Add it to `apps/local/kustomization.yaml` (`apps/ci` builds on it).
+4. New secrets: a line in `clusters/ci/secrets.sh`; PostHog or OpenAI variables: remove them in `apps/ci`.
 
 ## Local cluster
 

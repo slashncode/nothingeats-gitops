@@ -1,0 +1,16 @@
+# Infrastructure configs for the throwaway CI cluster (clusters/ci): the same as every cluster's,
+# without the SOPS secrets. A CI cluster never gets the age key; clusters/ci/secrets.sh creates
+# the same secrets with random values before Flux starts.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../configs
+patches:
+  - target:
+      kind: Secret
+    patch: |
+      $patch: delete
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: any
