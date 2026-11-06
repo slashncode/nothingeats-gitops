@@ -24,3 +24,13 @@ jobs:
       - uses: jdx/mise-action@82a612c5ab8bcda7cc5db6b7e81a8e7584c3dc6e # v5.2.3
       - name: Validate manifests and secrets
         run: scripts/validate.sh
+
+  # The whole shop from this commit in a throwaway cluster (clusters/ci), tested like a customer
+  # uses it. Pull requests test their head commit; Flux checks it out by its SHA.
+  system-tests:
+    needs: validate
+    uses: slashncode/nothingeats-e2e/.github/workflows/system-tests.yml@main
+    permissions:
+      contents: read
+    with:
+      gitops-ref: ${{ github.event.pull_request.head.sha || github.sha }}
