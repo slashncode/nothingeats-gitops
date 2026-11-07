@@ -1,6 +1,8 @@
 # Single-node Kafka in KRaft mode (controller and broker in one pool).
-# In the cluster: kafka-kafka-bootstrap:9092. From the host: localhost:19094 (k3d maps it to the
-# broker's NodePort 30094, and the broker advertises exactly that address).
+# In the cluster: kafka-kafka-bootstrap:9092, no login (its network policy admits the shop's pods
+# only). From the host: localhost:19094 (k3d maps it to the broker's NodePort 30094, and the broker
+# advertises exactly that address) with a SCRAM-SHA-512 login as KafkaUser `developer`; the User
+# Operator keeps its password in Secret `developer` (`just kafka-env` in the hub prints it).
 apiVersion: kafka.strimzi.io/v1
 kind: KafkaNodePool
 metadata:
@@ -47,6 +49,9 @@ spec:
         port: 9094
         type: nodeport
         tls: false
+        # Anything on the host could otherwise read every topic (identity's events carry addresses).
+        authentication:
+          type: scram-sha-512
         configuration:
           bootstrap:
             nodePort: 30096
@@ -70,3 +75,23 @@ spec:
           memory: 192Mi
         limits:
           memory: 256Mi
+    userOperator:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 192Mi
+        limits:
+          memory: 256Mi
+---
+# The login for the host's listener: services run from the IDE, kcat, scripts. No authorization is
+# configured on the cluster, so a signed-in user may do anything, like the pods on the inner listener.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaUser
+metadata:
+  name: developer
+  namespace: nothingeats
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  authentication:
+    type: scram-sha-512
