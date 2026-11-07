@@ -15,6 +15,21 @@ spec:
         - path:
             type: PathPrefix
             value: /admin
+      filters:
+        # Everything from the shop's origin, nothing from anywhere else. Inline scripts stay
+        # allowed for now: TanStack Start streams its hydration data in them, and Payload's
+        # adapter passes no nonce yet. Foreign scripts, connections, frames and forms are out.
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            set:
+              - name: Content-Security-Policy
+                value: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+              - name: X-Content-Type-Options
+                value: nosniff
+              - name: X-Frame-Options
+                value: DENY
+              - name: Referrer-Policy
+                value: same-origin
       backendRefs:
         - name: backoffice
           port: 80
