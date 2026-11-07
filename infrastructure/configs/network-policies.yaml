@@ -1,7 +1,12 @@
 # Namespace nothingeats: no pod takes traffic unless a policy lets it in. The infrastructure's
 # policies are below; every app declares its own callers in apps/base/<app>/network-policy.yaml;
-# Strimzi writes Kafka's (its listeners in kafka.yaml). k3s' policy controller lets the node
-# itself through, so kubelet probes and the NodePorts the host uses keep working. Egress stays open.
+# Strimzi writes Kafka's (its listeners in kafka.yaml). Egress stays open.
+#
+# k3s' policy controller lets the node itself through (kubelet probes). Traffic from the host to a
+# NodePort (tests and a single service on the laptop reach Postgres, Valkey and Elasticsearch that
+# way; k3d binds those ports to 127.0.0.1 only) is filtered before kube-proxy rewrites its source,
+# so it arrives with the Docker host's address: those ports also accept anything that is not a pod
+# (10.42.0.0/16 is k3s' pod network). Pods stay bound by the rules above them.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -51,6 +56,13 @@ spec:
       ports:
         - port: 5432
         - port: 8000
+    # The host through the NodePort (see the top of this file).
+    - from:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except: [10.42.0.0/16]
+      ports:
+        - port: 5432
 ---
 # Valkey: rate limits, live-stream fan-out, the leaderboard, the coach's budgets, the embedding cache.
 apiVersion: networking.k8s.io/v1
@@ -75,6 +87,13 @@ spec:
                   - notification-service
                   - search-service
                   - social-service
+      ports:
+        - port: 6379
+    # The host through the NodePort (see the top of this file).
+    - from:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except: [10.42.0.0/16]
       ports:
         - port: 6379
 ---
@@ -106,6 +125,13 @@ spec:
       ports:
         - port: 9200
         - port: 9300
+    # The host through the NodePort (see the top of this file).
+    - from:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except: [10.42.0.0/16]
+      ports:
+        - port: 9200
 ---
 # Garage: the S3 API for the backoffice (uploads) and the job that turns on website mode; the
 # website endpoint for the gateway (/media); RPC between Garage nodes.
