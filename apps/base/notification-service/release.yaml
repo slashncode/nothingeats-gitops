@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-notification-service
-      tag: main-cd61e85-1794056516 # {"$imagepolicy": "nothingeats:notification-service:tag"}
+      tag: main-4f5f476-1794057312 # {"$imagepolicy": "nothingeats:notification-service:tag"}
     env:
       DATABASE__URL: jdbc:postgresql://postgres-rw:5432/notification
       KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
