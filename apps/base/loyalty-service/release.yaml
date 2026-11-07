@@ -33,6 +33,10 @@ spec:
       POSTHOG__PROJECT_TOKEN:
         secret: posthog
         key: project-token
+      # spin-wheel-odds, evaluated locally (no request to PostHog per spin).
+      POSTHOG__FLAGS_SECRET_KEY:
+        secret: posthog-flags
+        key: secret-key
     # Coupons for ordering's cart and checkout (LoyaltyService).
     grpc:
       enabled: true

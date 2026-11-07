@@ -75,6 +75,12 @@ patches:
         value: DEMO
   - target:
       kind: HelmRelease
+      name: loyalty-service
+    patch: |
+      - op: remove
+        path: /spec/values/secretEnv/POSTHOG__FLAGS_SECRET_KEY
+  - target:
+      kind: HelmRelease
       name: search-service
     patch: |
       - op: remove
