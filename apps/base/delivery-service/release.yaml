@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-delivery-service
-      tag: main-8a46084-1794073868 # {"$imagepolicy": "nothingeats:delivery-service:tag"}
+      tag: main-8a46084-1794074270 # {"$imagepolicy": "nothingeats:delivery-service:tag"}
     env:
       DATABASE__URL: jdbc:postgresql://postgres-rw:5432/delivery
       KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
