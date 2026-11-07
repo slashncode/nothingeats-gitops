@@ -1,0 +1,25 @@
+# Who may call delivery-service: the shop through the gateway; ordering asks for quotes over gRPC. Everything else is denied
+# (infrastructure/configs/network-policies.yaml).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: delivery-service
+  namespace: nothingeats
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: delivery-service
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
+      ports:
+        - port: http
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ordering-service
+      ports:
+        - port: grpc

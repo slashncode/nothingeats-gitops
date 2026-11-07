@@ -40,6 +40,9 @@ spec:
         port: 9092
         type: internal
         tls: false
+        # Strimzi's NetworkPolicy lets only the shop's own pods (namespace nothingeats) in here.
+        networkPolicyPeers:
+          - podSelector: {}
       - name: external
         port: 9094
         type: nodeport

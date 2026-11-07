@@ -1,0 +1,19 @@
+# Who may call social-service: the shop through the gateway (feed, leaderboard). Everything else is denied
+# (infrastructure/configs/network-policies.yaml).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: social-service
+  namespace: nothingeats
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: social-service
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
+      ports:
+        - port: http

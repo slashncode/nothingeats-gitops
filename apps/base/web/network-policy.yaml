@@ -1,0 +1,22 @@
+# Who may call web: the shop through the gateway, the backoffice (the published default texts). Everything else is denied
+# (infrastructure/configs/network-policies.yaml).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: web
+  namespace: nothingeats
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: web
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: backoffice
+      ports:
+        - port: http

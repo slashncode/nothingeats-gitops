@@ -1,0 +1,25 @@
+# Who may call loyalty-service: the shop through the gateway; ordering prices and reserves coupons over gRPC. Everything else is denied
+# (infrastructure/configs/network-policies.yaml).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: loyalty-service
+  namespace: nothingeats
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: loyalty-service
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
+      ports:
+        - port: http
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ordering-service
+      ports:
+        - port: grpc

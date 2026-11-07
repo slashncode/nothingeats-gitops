@@ -5,3 +5,4 @@ resources:
   - topics.yaml
   - image.yaml
   - release.yaml
+  - network-policy.yaml

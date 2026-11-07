@@ -1,0 +1,143 @@
+# Namespace nothingeats: no pod takes traffic unless a policy lets it in. The infrastructure's
+# policies are below; every app declares its own callers in apps/base/<app>/network-policy.yaml;
+# Strimzi writes Kafka's (its listeners in kafka.yaml). k3s' policy controller lets the node
+# itself through, so kubelet probes and the NodePorts the host uses keep working. Egress stays open.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: nothingeats
+spec:
+  podSelector: {}
+  policyTypes: [Ingress]
+---
+# Postgres: the apps that own a database (their migrate Jobs and CronJobs carry the same name),
+# the CloudNativePG operator, and the cluster's own instances.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres
+  namespace: nothingeats
+spec:
+  podSelector:
+    matchLabels:
+      cnpg.io/cluster: postgres
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - assistant-service
+                  - backoffice
+                  - catalog-service
+                  - delivery-service
+                  - identity-service
+                  - loyalty-service
+                  - notification-service
+                  - ordering-service
+                  - social-service
+      ports:
+        - port: 5432
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cnpg-system
+        - podSelector:
+            matchLabels:
+              cnpg.io/cluster: postgres
+      ports:
+        - port: 5432
+        - port: 8000
+---
+# Valkey: rate limits, live-stream fan-out, the leaderboard, the coach's budgets, the embedding cache.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: valkey
+  namespace: nothingeats
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: valkey
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - assistant-service
+                  - identity-service
+                  - notification-service
+                  - search-service
+                  - social-service
+      ports:
+        - port: 6379
+---
+# Elasticsearch: only search-service reads and writes it; the ECK operator manages it.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: elasticsearch
+  namespace: nothingeats
+spec:
+  podSelector:
+    matchLabels:
+      elasticsearch.k8s.elastic.co/cluster-name: search
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: search-service
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: elastic-system
+      ports:
+        - port: 9200
+    - from:
+        - podSelector:
+            matchLabels:
+              elasticsearch.k8s.elastic.co/cluster-name: search
+      ports:
+        - port: 9200
+        - port: 9300
+---
+# Garage: the S3 API for the backoffice (uploads) and the job that turns on website mode; the
+# website endpoint for the gateway (/media); RPC between Garage nodes.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: garage
+  namespace: nothingeats
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: garage
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: backoffice
+        - podSelector:
+            matchLabels:
+              batch.kubernetes.io/job-name: garage-media-website
+      ports:
+        - port: 3900
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
+      ports:
+        - port: 3902
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: garage
+      ports:
+        - port: 3901

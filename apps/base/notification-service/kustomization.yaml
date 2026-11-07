@@ -6,3 +6,4 @@ resources:
   - image.yaml
   - vapid.sops.yaml
   - release.yaml
+  - network-policy.yaml

@@ -1,0 +1,28 @@
+# Who may call search-service: the shop through the gateway, the backoffice (index status, reindex); the coach retrieves over gRPC. Everything else is denied
+# (infrastructure/configs/network-policies.yaml).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: search-service
+  namespace: nothingeats
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: search-service
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: backoffice
+      ports:
+        - port: http
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: assistant-service
+      ports:
+        - port: grpc

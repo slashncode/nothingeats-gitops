@@ -6,4 +6,5 @@ resources:
   - payload-secret.sops.yaml
   - image.yaml
   - release.yaml
+  - network-policy.yaml
   - admin-route.yaml
