@@ -56,5 +56,14 @@ spec:
         task: reindex
         schedule: "0 4 1 1 *"
         suspend: true
+    # Every search and suggestion goes through here. In the load test (600 visitors a second, about
+    # 3,000 requests a second) the JVM outgrew the chart's 512 MiB (a 60 % heap plus everything
+    # beside it): the kernel killed it, it restarted into the same load, and search answered 503.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 384Mi
+      limits:
+        memory: 768Mi
     route:
       enabled: true
