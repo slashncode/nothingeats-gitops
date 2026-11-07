@@ -18,8 +18,9 @@ infrastructure/
 apps/
   base/sources/            the backend-service chart from GHCR, accepted only with a valid cosign signature
   base/<service>/          HelmRelease, Database, ImageRepository + ImagePolicy
+  base/otel-collector/     ships the services' logs to PostHog Logs (OpenTelemetry Collector per node)
   local/                   what runs locally, plus the ImageUpdateAutomation
-  ci/                      local minus secrets and image automation; no PostHog or OpenAI, deliveries at 0.02
+  ci/                      local minus secrets, image automation and log shipping; no PostHog or OpenAI, deliveries at 0.02
 ```
 
 Each stage waits for the previous one to be healthy, so CRDs exist before controllers and controllers before the resources that need them.
@@ -30,6 +31,10 @@ Each stage waits for the previous one to be healthy, so CRDs exist before contro
 2. The service's `ImagePolicy` picks the newest tag by timestamp.
 3. The `ImageUpdateAutomation` commits the tag into `apps/base/<service>/release.yaml` (setter marker `# {"$imagepolicy": ...}`).
 4. Flux upgrades the HelmRelease: the migrate Job runs first, then the Deployment rolls.
+
+## Logs
+
+`apps/base/otel-collector` runs an OpenTelemetry Collector on every node. It reads the log files of the shop's containers (`app` and `cron`; not the infrastructure, not nginx), parses their JSON lines (logstash in Kotlin, pino in TypeScript) into OpenTelemetry records with `service.name` from the pod's `app.kubernetes.io/name` and the right severity, drops debug lines and Kafka's client chatter below WARN, and sends the rest to PostHog Logs (EU, OTLP/HTTP) with the project token. Nothing in the services knows about it; `kubectl logs` shows the same lines.
 
 ## Secrets
 

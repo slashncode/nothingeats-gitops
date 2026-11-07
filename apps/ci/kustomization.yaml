@@ -2,8 +2,8 @@
 # apps, minus what a test run must not have or touch.
 # - No SOPS secrets: clusters/ci/secrets.sh creates them with random values.
 # - No image automation: CI tests the tags on this branch and never commits.
-# - No outside services: no PostHog (test traffic stays out of the analytics), no OpenAI (the
-#   coach runs its scripted model, search embeds with feature hashing).
+# - No outside services: no PostHog (test traffic stays out of the analytics, and no log shipping),
+#   no OpenAI (the coach runs its scripted model, search embeds with feature hashing).
 # - Deliveries at 0.02 time scale: a 30-minute delivery takes 36 seconds (checkout's estimate too).
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -24,6 +24,24 @@ patches:
       $patch: delete
       apiVersion: image.toolkit.fluxcd.io/v1
       kind: ImagePolicy
+      metadata:
+        name: any
+  - target:
+      kind: HelmRelease
+      name: otel-collector
+    patch: |
+      $patch: delete
+      apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      metadata:
+        name: any
+  - target:
+      kind: HelmRepository
+      name: open-telemetry
+    patch: |
+      $patch: delete
+      apiVersion: source.toolkit.fluxcd.io/v1
+      kind: HelmRepository
       metadata:
         name: any
   - target:

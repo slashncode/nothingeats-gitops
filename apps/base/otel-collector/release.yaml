@@ -1,0 +1,163 @@
+# The shop's logs to PostHog Logs. One OpenTelemetry Collector per node reads the containers' log
+# files (the services already write JSON lines: logstash in Kotlin, pino in TypeScript), turns them
+# into OpenTelemetry log records with the service's name and the right severity, and sends them
+# over OTLP/HTTP with the project token. The services know nothing about it.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: open-telemetry
+  namespace: nothingeats
+spec:
+  interval: 12h
+  url: https://open-telemetry.github.io/opentelemetry-helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: otel-collector
+  namespace: nothingeats
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: opentelemetry-collector
+      version: 0.178.2
+      sourceRef:
+        kind: HelmRepository
+        name: open-telemetry
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  values:
+    mode: daemonset
+    image:
+      repository: otel/opentelemetry-collector-k8s
+    presets:
+      # The volumes for /var/log/pods; the receiver itself is configured below.
+      logsCollection:
+        enabled: true
+      # Pod metadata from the Kubernetes API (RBAC to read pods): the service's name from its label.
+      kubernetesAttributes:
+        enabled: true
+    # The log files belong to root.
+    securityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: [ALL]
+    resources:
+      requests:
+        cpu: 20m
+        memory: 64Mi
+      limits:
+        memory: 192Mi
+    # Nothing sends to it: no receiver ports, no Service.
+    ports:
+      otlp:
+        enabled: false
+      otlp-http:
+        enabled: false
+      jaeger-compact:
+        enabled: false
+      jaeger-thrift:
+        enabled: false
+      jaeger-grpc:
+        enabled: false
+      zipkin:
+        enabled: false
+      metrics:
+        enabled: false
+    extraEnvs:
+      - name: POSTHOG_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: posthog
+            key: project-token
+    alternateConfig:
+      extensions:
+        health_check:
+          endpoint: ${env:MY_POD_IP}:13133
+      receivers:
+        file_log:
+          # The shop's own containers (the charts name them app and cron), not the infrastructure's
+          # and not the web's nginx access log.
+          include:
+            - /var/log/pods/nothingeats_*/app/*.log
+            - /var/log/pods/nothingeats_*/cron/*.log
+          start_at: end
+          include_file_path: true
+          operators:
+            - type: container
+              id: container-parser
+            - type: json_parser
+              if: 'body matches "^\\{"'
+              parse_from: body
+              parse_to: attributes
+            # logstash names the level (INFO), pino numbers it (30).
+            - type: severity_parser
+              if: attributes.level != nil
+              parse_from: attributes.level
+              mapping:
+                trace: 10
+                debug: 20
+                info: 30
+                warn: 40
+                error: 50
+                fatal: 60
+            # The message: logstash's `message`, pino's `msg`.
+            - type: move
+              if: attributes.message != nil
+              from: attributes.message
+              to: body
+            - type: move
+              if: attributes.msg != nil
+              from: attributes.msg
+              to: body
+      processors:
+        memory_limiter:
+          check_interval: 5s
+          limit_percentage: 80
+          spike_limit_percentage: 25
+        k8s_attributes:
+          extract:
+            labels:
+              - tag_name: service.name
+                key: app.kubernetes.io/name
+                from: pod
+        transform/tidy:
+          error_mode: ignore
+          log_statements:
+            - context: log
+              statements:
+                # Already in the record's timestamp and severity, or the container runtime's own (the
+                # file path only served the container parser).
+                - delete_matching_keys(attributes, "^(level|level_value|@version|@timestamp|time|logtag|log\\.iostream|log\\.file\\.path)$")
+        filter/noise:
+          error_mode: ignore
+          logs:
+            log_record:
+              # Debug and trace; lines without a level (plain text) stay.
+              - severity_number > SEVERITY_NUMBER_UNSPECIFIED and severity_number < SEVERITY_NUMBER_INFO
+              # Kafka's clients print their whole configuration whenever one starts.
+              - severity_number < SEVERITY_NUMBER_WARN and IsMatch(attributes["logger_name"], "^org\\.apache\\.kafka\\.")
+        batch:
+          send_batch_size: 512
+          timeout: 5s
+      exporters:
+        otlp_http/posthog:
+          logs_endpoint: https://eu.i.posthog.com/i/v1/logs
+          headers:
+            Authorization: Bearer ${env:POSTHOG_TOKEN}
+      service:
+        extensions: [health_check]
+        pipelines:
+          logs:
+            receivers: [file_log]
+            processors: [memory_limiter, k8s_attributes, transform/tidy, filter/noise, batch]
+            exporters: [otlp_http/posthog]

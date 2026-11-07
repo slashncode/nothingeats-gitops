@@ -11,6 +11,7 @@ resources:
   - ../base/loyalty-service
   - ../base/notification-service
   - ../base/ordering-service
+  - ../base/otel-collector
   - ../base/search-service
   - ../base/social-service
   - ../base/web
