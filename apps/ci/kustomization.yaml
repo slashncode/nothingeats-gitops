@@ -4,7 +4,7 @@
 # - No image automation: CI tests the tags on this branch and never commits.
 # - No outside services: no PostHog (test traffic stays out of the analytics), no OpenAI (the
 #   coach runs its scripted model, search embeds with feature hashing).
-# - Deliveries at 0.02 time scale: a 30-minute delivery takes 36 seconds.
+# - Deliveries at 0.02 time scale: a 30-minute delivery takes 36 seconds (checkout's estimate too).
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
@@ -70,4 +70,12 @@ patches:
     patch: |
       - op: replace
         path: /spec/values/env/SIMULATION__TIME_SCALE
+        value: "0.02"
+  # Checkout's estimate when delivery cannot quote must use the same time scale.
+  - target:
+      kind: HelmRelease
+      name: ordering-service
+    patch: |
+      - op: add
+        path: /spec/values/env/CHECKOUT__FALLBACK_TIME_SCALE
         value: "0.02"
