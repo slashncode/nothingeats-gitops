@@ -62,6 +62,8 @@ patches:
     patch: |
       - op: remove
         path: /spec/values/secretEnv/POSTHOG__PERSONAL_API_KEY
+      - op: remove
+        path: /spec/values/secretEnv/POSTHOG__FLAGS_SECRET_KEY
   - target:
       kind: HelmRelease
       name: assistant-service
