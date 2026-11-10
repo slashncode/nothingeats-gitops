@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slashncode/nothingeats-loyalty-service
-      tag: main-43799aa-1794077907 # {"$imagepolicy": "nothingeats:loyalty-service:tag"}
+      tag: main-5d01eaf-1794309150 # {"$imagepolicy": "nothingeats:loyalty-service:tag"}
     env:
       DATABASE__URL: jdbc:postgresql://postgres-rw:5432/loyalty
       KAFKA__BOOTSTRAP_SERVERS: kafka-kafka-bootstrap:9092
